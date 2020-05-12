@@ -5,6 +5,6 @@ author: "Ecosystem ecology and soil biogeochemistry"
 output: html_document
 ---
 
-## Hello
+![](mushroom.jpg){width="90%"}
 
 
