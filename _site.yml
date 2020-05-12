@@ -7,3 +7,9 @@ navbar:
       href: index.html
     - text: "About Me"
       href: about.html
+    - text: "Research"     
+      href: research.html 
+output:
+  html_document:
+    theme: flatly
+    css: style.css
