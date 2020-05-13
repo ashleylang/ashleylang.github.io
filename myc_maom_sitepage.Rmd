@@ -220,10 +220,8 @@ pretty_pal2=c("#4ca489", "#264737", "darkseagreen1")
 
 ****
 
-## What controls the distribution of POM vs MAOM C  in forest soil?
-
 ## Quick Summary
-### *Recent studies indicate that ecosystems dominated by vegetation associated with AM fungi store more soil organic matter (SOM) as mineral-associated organic matter (MAOM) rather than particulate organic matter (POM), but plant mycorrhizal associations are often correlated with plant litter chemistry. We sought to disentangle these potential drivers of MAOM content in forests across New Hampshire and Vermont.*  
+### *Recent studies indicate that ecosystems dominated by vegetation associated with AM fungi store more soil organic matter (SOM) as mineral-associated organic matter (MAOM) rather than particulate organic matter (POM), but plant mycorrhizal associations are often correlated with plant litter chemistry. Because plant litter chemistry is also known to influence MAOM formation, is is difficult to disentangle these potential drivers of MAOM content. We  in forests across New Hampshire and Vermont.*  
 
 
 
@@ -244,7 +242,7 @@ Based on this information, we may expect litter quality to affect the amount of 
 2. Other traits of the trees themselves (root turnover rate, above:belowground biomass, etc)*
 
 
-In this study, we investigated how mycorrhizal associations and foliar chemsitry affect soil MAOM content by measuring MAOM and POM content beneath six tree species carefully selected to represent a range of both factors. We are using the tree's mycorrhizal association as a proxy for the general composition of the microbial communities in the soil.  
+#### In this study, we investigated how mycorrhizal associations and foliar chemsitry affect soil MAOM content by measuring MAOM and POM content beneath six tree species carefully selected to represent a range of both factors. We are using the tree's mycorrhizal association as a proxy for the general composition of the microbial communities in the soil.  
 
 ### The cast of characters: Our 6 Tree Species  
 
@@ -307,7 +305,7 @@ closeUpmap=ggplot(data=nhvt)+
   
 gg_inset_map1 = ggdraw() +
   draw_plot(closeUpmap) +
-  draw_plot(regionalmap, x = 0.6, y = 0.7, width = 0.3, height = 0.3)
+  draw_plot(regionalmap, x = 0.55, y = 0.7, width = 0.3, height = 0.3)
 
   
 gg_inset_map1
@@ -350,7 +348,7 @@ Remember: % Clay was determined at the site level; there are 7 distinct sites. F
  
 ### 2. The proportion of total C in the POM fraction was higher under trees with high foliar C:N and decreased with higher soil clay percentage.  
 
-```{r figure_propC, echo=FALSE, warning=FALSE, message=FALSE, fig.width=20, fig.height=16}
+```{r figure_propC, echo=FALSE, warning=FALSE, message=FALSE, fig.width=20, fig.height=14}
 
 HF.propC.by.clay=ggplot(myc.maom, aes(x=clay, y=propC.as.HF, colour=Myc.x))+
    geom_smooth(method="lm",size=2)+
