@@ -11,5 +11,5 @@ navbar:
       href: research.html 
 output:
   html_document:
-    theme: Plainwhite
-    css: style.css
+    theme: Lux
+    css: bootstrap.css
