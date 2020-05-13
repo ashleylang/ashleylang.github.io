@@ -1,7 +1,0 @@
----
-title: "About"
----
-
-About me
-
-![](IMG_3303.jpg){width="50%"}

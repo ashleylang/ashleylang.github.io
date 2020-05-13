@@ -5,11 +5,11 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "About Me"
-      href: about.html
-    - text: "Research"     
+    - text: "Mycorrhizae and MAOM"
+      href: myc_maom_sitepage.html
+    - text: "Soil respiration"     
       href: research.html 
 output:
   html_document:
-    theme: sandstone
+    theme: flatly
     css: style.css

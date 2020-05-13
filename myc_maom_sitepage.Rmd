@@ -1,0 +1,737 @@
+---
+title: "MAOM"
+---
+
+---
+title: "Myc_MAOM Project"
+
+---
+<style type="text/css">
+.table {
+
+    width: 50%;
+
+}
+</style>
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(knitr)
+library(ggpubr)
+library(cowplot)
+library(ggmap)
+library(maps)
+library(mapdata)
+library(stringi)
+library(nlme)
+library(ggsn)
+library(sf)
+library(car)
+library(plotly)
+
+#bringing in foliar chemistry data from Northern Ecosystems Research Cooperative: http://www.nercscience.org/Metadata_FoliarChemistry.html
+nerc=read.csv("~/Documents/Projects/inProgress/Myc_MAOM/data/foliar_chem/FoliarChem_NERC.csv", header=TRUE) %>% 
+  select(SpeciesID, StateOrProvince, Foliage_cellulose_., Foliage_lignin_., Foliage_C_., Foliage_N_.)  %>%
+  group_by(SpeciesID) %>% 
+  mutate(C.N= Foliage_C_. / Foliage_N_.,
+         lignin.N=Foliage_lignin_. / Foliage_N_.,
+         se.c.n=(sd(C.N, na.rm=TRUE) /  
+           sqrt(length(C.N[!is.na(C.N)]))),
+         n.C.N.values=length(C.N[!is.na(C.N)]),
+         se.lig.n=(sd(lignin.N, na.rm=TRUE) /  
+           sqrt(length(lignin.N[!is.na(lignin.N)]))),
+         n.Lig.N.values=length(lignin.N[!is.na(lignin.N)])) %>%
+  filter(SpeciesID=="THOC2" |
+           SpeciesID=="TSCA" |
+           SpeciesID=="FAGR" |
+           SpeciesID=="ACSA3" |
+           SpeciesID=="FRAM2" |
+           SpeciesID=="BEAL2") %>% 
+  summarise(avg_CN=mean(C.N, na.rm=TRUE),
+            avg_lig.N=mean(lignin.N, na.rm=TRUE),
+            se_CN=mean(se.c.n, na.rm=TRUE),
+            se_lig.N=mean(se.lig.n, na.rm=TRUE),
+            C.N.count=mean(n.C.N.values),
+            Lig.N.count=mean(n.Lig.N.values)) %>% 
+  mutate(SpeciesID=case_when(SpeciesID=="THOC2" ~ "T. occidentalis",
+                             SpeciesID=="TSCA" ~ "T. canadensis",
+                             SpeciesID=="FAGR" ~ "F. grandifolia",
+                             SpeciesID=="ACSA3" ~ "A. saccharum",
+                             SpeciesID=="FRAM2" ~ "F. americana",
+                             SpeciesID=="BEAL2" ~ "B. alleghaniensis"),
+         Myc=case_when(SpeciesID=="T. occidentalis" ~ "AM",
+                       SpeciesID=="A. saccharum" ~ "AM",
+                       SpeciesID=="F. americana" ~ "AM",
+                       SpeciesID=="T. canadensis" ~ "ECM",
+                       SpeciesID=="F. grandifolia" ~ "ECM",
+                       SpeciesID=="B. alleghaniensis" ~ "ECM"))
+
+nerc$species= factor(nerc$SpeciesID, levels=c("F. americana", "A. saccharum", "T. occidentalis", "B. alleghaniensis", "F. grandifolia", "T. canadensis"))
+
+
+
+#This is site-level information about locations where samples were collected and soil stuff
+sites=read.csv("~/Documents/Projects/inProgress/Myc_MAOM/Data/Plot Data/MycMin_PlotData.csv") %>% 
+  dplyr::select(Site, Target.species, Latitude, Longitude, Soil.clay, Soil.silt, Soil.sand) %>% 
+  mutate(Latitude=as.character(Latitude),
+         Longitude=as.character(Longitude),
+         site=case_when(Site=="RR" ~ "CV",
+                        Site=="CB" ~ "CV",
+                        Site=="AB" ~ "AB",
+                        Site=="HB" ~ "HB",
+                        Site=="MK" ~ "MK",
+                        Site=="MS" ~ "MS",
+                        Site=="RM" ~ "RM",
+                        Site=="LP" ~ "LP")) %>% 
+  group_by(site) %>% 
+  summarise(Lat=mean(as.numeric(Latitude)),
+            Long=mean(as.numeric(Longitude)),
+            clay=mean(Soil.clay),
+            silt=mean(Soil.silt),
+            sand=mean(Soil.sand))
+
+
+#Here's my data about soil C and N in the different fractions and in bulk samples
+myc.maom=read.csv("~/Documents/Projects/inProgress/Myc_MAOM/data/myc.maom.data.csv") %>%
+  mutate(species=case_when(Species=="ACSA" ~ "A. saccharum",
+                           Species=="FRAM" ~ "F. americana",
+                           Species=="FAGR" ~ "F. grandifolia",
+                           Species=="BEAL" ~ "B. alleghaniensis",
+                           Species=="THOC" ~ "T. occidentalis",
+                           Species=="TSCA" ~ "T. canadensis"),
+         gC.as.FLF=((FLF.pct.C/100)*FLF.g)*(Sample.mass/20),
+         gC.as.OLF=((OLF.pct.C/100)*OLF.g)*(Sample.mass/20),
+         gC.as.HF=((HF.pct.C/100)*HF.g)*(Sample.mass/20),
+         gN.as.FLF=((FLF.pct.N/100)*FLF.g)*(Sample.mass/20),
+         gN.as.OLF=((OLF.pct.N/100)*OLF.g)*(Sample.mass/20),
+         gN.as.HF=((HF.pct.N/100)*HF.g)*(Sample.mass/20),
+         org.CN=org.pct.C/org.pct.N,
+         min.CN=min.pct.C/min.pct.N)%>% 
+  mutate(propC.as.FLF=gC.as.FLF/(gC.as.FLF+gC.as.OLF+gC.as.HF),
+         propC.as.OLF=gC.as.OLF/(gC.as.FLF+gC.as.OLF+gC.as.HF),
+         propC.as.HF=gC.as.HF/(gC.as.FLF+gC.as.OLF+gC.as.HF),
+         propN.as.FLF=gN.as.FLF/(gN.as.FLF+gN.as.OLF+gN.as.HF),
+         propN.as.OLF=gN.as.OLF/(gN.as.FLF+gN.as.OLF+gN.as.HF),
+         propN.as.HF=gN.as.HF/(gN.as.FLF+gN.as.OLF+gN.as.HF),
+         FLF.mgC.per.g.soil=gC.as.FLF*(1000)/Sample.mass,
+         OLF.mgC.per.g.soil=gC.as.OLF*(1000)/Sample.mass,
+         HF.mgC.per.g.soil=gC.as.HF*(1000)/Sample.mass,
+         FLF.mgN.per.g.soil=gN.as.FLF*(1000)/Sample.mass,
+         OLF.mgN.per.g.soil=gN.as.OLF*(1000)/Sample.mass,
+         HF.mgN.per.g.soil=gN.as.HF*(1000)/Sample.mass,
+         site=case_when(Site=="RR" ~ "CV",
+                        Site=="CB" ~ "CV",
+                        Site=="AB" ~ "AB",
+                        Site=="HB" ~ "HB",
+                        Site=="MK" ~ "MK",
+                        Site=="MS" ~ "MS",
+                        Site=="RM" ~ "RM",
+                        Site=="LP" ~ "LP")) %>% 
+  left_join(nerc, by= "species") %>% 
+  select(-SpeciesID, -Myc.y, -Species) %>% 
+    left_join(sites, by="site")
+
+
+#ordering species how i want them to appear in figures
+myc.maom$species= factor(myc.maom$species, levels=c("F. americana", "A. saccharum", "T. occidentalis", "B. alleghaniensis", "F. grandifolia", "T. canadensis"))
+
+
+# #Long version of this data frame...
+myc.maom.long=read.csv("~/Documents/Projects/inProgress/Myc_MAOM/data/myc.maom.data.csv") %>%
+  select(-X.1,-X) %>%
+  mutate(gC.as.FLF=((FLF.pct.C/100)*FLF.g),
+         gC.as.OLF=((OLF.pct.C/100)*OLF.g),
+         gC.as.HF=((HF.pct.C/100)*HF.g),
+         gN.as.FLF=((FLF.pct.N/100)*FLF.g),
+         gN.as.OLF=((OLF.pct.N/100)*OLF.g),
+         gN.as.HF=((HF.pct.N/100)*HF.g),
+         org.CN=org.pct.C/org.pct.N,
+         min.CN=min.pct.C/min.pct.N) %>%
+  mutate(propC.as.FLF=gC.as.FLF/(gC.as.FLF+gC.as.OLF+gC.as.HF),
+         propC.as.OLF=gC.as.OLF/(gC.as.FLF+gC.as.OLF+gC.as.HF),
+         propC.as.HF=gC.as.HF/(gC.as.FLF+gC.as.OLF+gC.as.HF),
+         propN.as.FLF=gN.as.FLF/(gN.as.FLF+gN.as.OLF+gN.as.HF),
+         propN.as.OLF=gN.as.OLF/(gN.as.FLF+gN.as.OLF+gN.as.HF),
+         propN.as.HF=gN.as.HF/(gN.as.FLF+gN.as.OLF+gN.as.HF),
+         FLF.mgC.per.g.soil=gC.as.FLF*(1000)/Sample.mass,
+         OLF.mgC.per.g.soil=gC.as.OLF*(1000)/Sample.mass,
+         HF.mgC.per.g.soil=gC.as.HF*(1000)/Sample.mass,
+         FLF.mgN.per.g.soil=gN.as.FLF*(1000)/Sample.mass,
+         OLF.mgN.per.g.soil=gN.as.OLF*(1000)/Sample.mass,
+         HF.mgN.per.g.soil=gN.as.HF*(1000)/Sample.mass) %>%
+  pivot_longer(-c(uid,Site,Species,Rep,Myc,Sample.mass,O.horizon.depth), names_to= "variable", values_to="value.as.fraction") %>%
+  mutate(fraction = case_when(stri_detect_fixed(variable, "FLF") ~ "FLF",
+                              stri_detect_fixed(variable, "OLF")    ~ "OLF",
+                              stri_detect_fixed(variable, "HF")    ~ "HF",
+                              TRUE  ~ "Bulk"),
+         type= case_when(stri_detect_fixed(variable, "pct") ~ "percent",
+                         stri_detect_fixed(variable, ".mg") ~ "milligrams",
+                         stri_detect_fixed(variable, "prop") ~ "proportion",
+                         TRUE ~ "other"),
+         element= case_when(stri_detect_fixed(variable, "C") ~ "carbon",
+                            stri_detect_fixed(variable, "N") ~ "nitrogen",
+                            TRUE ~ "soil"),
+         measurement = paste(type, element, sep="_"),
+         species= case_when(Species=="ACSA" ~ "A. saccharum",
+                           Species=="FRAM" ~ "F. americana",
+                           Species=="FAGR" ~ "F. grandifolia",
+                           Species=="BEAL" ~ "B. alleghaniensis",
+                           Species=="THOC" ~ "T. occidentalis",
+                           Species=="TSCA" ~ "T. canadensis"),
+         site=case_when(Site=="RR" ~ "CV",
+                        Site=="CB" ~ "CV",
+                        Site=="AB" ~ "AB",
+                        Site=="HB" ~ "HB",
+                        Site=="MK" ~ "MK",
+                        Site=="MS" ~ "MS",
+                        Site=="RM" ~ "RM",
+                        Site=="LP" ~ "LP")) %>%
+  left_join(nerc, by= "species") %>%
+  select(-SpeciesID, -Myc.y, -Species) %>%
+    left_join(sites, by="site")
+
+
+# myc.maom.mgC=myc.maom.long %>% 
+#   filter(measurement=="milligrams_carbon",
+#          fraction != "OLF") 
+# 
+# myc.maom.propC=myc.maom.long %>% 
+#   filter(measurement=="proportion_carbon",
+#          fraction != "OLF")
+# 
+# myc.maom.mgN=myc.maom.long %>% 
+#   filter(measurement=="milligrams_nitrogen",
+#          fraction != "OLF") 
+# 
+# myc.maom.propN=myc.maom.long %>% 
+#   filter(measurement=="proportion_nitrogen",
+#          fraction != "OLF")
+
+site.min.N=myc.maom %>% 
+  group_by(Site) %>% 
+  summarise(site.N=mean(min.pct.N))
+
+#These are color palettes:
+ExCon= c('#CCBB44', '#114C3A')
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+pretty_pal=c("#973204", "#C2956E", "#264737", "#4ca489","gray32",  "gray81", "#441507")
+pretty_pal2=c("#4ca489", "#264737", "darkseagreen1")
+
+
+```
+
+****
+
+## What controls the distribution of POM vs MAOM C and N in forest soil?
+
+*Possible controls:*  
+1. The quality of the litter inputs to the soil  
+2. The mycorrhizal association of nearby trees
+
+*Other controls that are important to consider:  
+1. Mineral composition of the soil in each site  
+2. Other traits of the trees themselves (root turnover rate, above:belowground biomass, something else entirely??)*
+
+### Tree Species
+
+| Litter Quality |        AM            |        ECM      |
+| -------------  |:--------------------:| :--------------:|
+| High           | White Ash            |    Yellow Birch |
+| Medium         | Sugar Maple          | American Beech  |
+| Low            | Northern White Cedar | Eastern Hemlock |
+
+## Figure 1:
+```{r ligninN, echo=FALSE, warning=F, message=F, fig.width=7}
+
+littercn=ggplot(data=nerc, aes(x=species, y=avg_CN, fill=Myc))+
+   geom_col()+
+  scale_fill_manual(name="Mycorrhizal\nType",values= pretty_pal2)+
+  labs(x=" ", y="Foliar C:N")+
+  theme_cowplot()+
+  theme(legend.position = "right", legend.title=element_text(hjust=0.5),axis.text.x = element_text(face="italic", angle = 30, hjust=1, vjust=1))+
+  geom_errorbar(aes(ymin=avg_CN-se_CN, ymax=avg_CN+se_CN), width=0.2, size=0.25, colour="black", linetype="solid")
+littercn
+ggsave("litterCN.jpg", path="~/Documents/Projects/inProgress/Myc_MAOM/figures", width= 16, height= 14, units="cm")
+
+litterlign=ggplot(data=nerc, aes(x=species, y=avg_lig.N, fill=Myc))+
+  geom_col()+
+    scale_fill_manual(values= pretty_pal2)+
+  labs(x=" ", y="Foliar Lignin:N")+
+  theme_cowplot()+
+  geom_errorbar(aes(ymin=avg_lig.N-se_lig.N, ymax=avg_lig.N+se_lig.N), width=0.2, size=0.25, colour="black", linetype="solid")
+
+
+litter=ggarrange(littercn, litterlign, ncol=2)
+
+```
+
+## Site Map:
+
+```{r map, echo=FALSE, warning=FALSE, message=FALSE}
+
+states <- map_data("state")
+nhvt <- subset(states, region %in% c("new hampshire", "vermont"))
+
+regionalmap=ggplot(data=nhvt)+
+  geom_polygon(aes(x=long, y=lat, group=group), fill="darkseagreen3", color="black")+
+  coord_fixed(1.3)+
+  theme(axis.text=element_blank(), axis.line = element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.background = element_rect(fill = "lightgray"), panel.border = element_rect(linetype="solid", fill=NA))+
+  geom_point(aes(x = Long, y = Lat), data = sites, size = 1, color="black")+
+  geom_rect(aes(xmin = -72.6, xmax = -71.5, ymin = 43.5, ymax = 44.75),
+               fill = "transparent", color = "black")
+
+closeUpmap=ggplot(data=nhvt)+
+  geom_polygon(aes(x=long, y=lat, group=group), fill="darkseagreen1", color="black")+
+  labs(x="Longitude", y="Latitude")+
+  coord_fixed(xlim = c(-72.6, -71.5),  ylim = c(43.5, 44.75), ratio=1.3)+
+  geom_point(aes(x = Long, y = Lat, label=site), data = sites, size = 3, color="black")+
+  geom_text(data = sites, aes(x = Long, y = Lat, label = site), size = 5, vjust = 1.5, hjust = 0.5, colour="black")+
+  scalebar(x.min=-72.6, x.max=-71.6, y.min=43.5, y.max=44.75, dist = 20, dist_unit = "km", model = "WGS84", transform=TRUE)
+
+  
+gg_inset_map1 = ggdraw() +
+  draw_plot(closeUpmap) +
+  draw_plot(regionalmap, x = 0.67, y = 0.7, width = 0.3, height = 0.3)
+ggsave("Site_Map.jpg", path="~/Documents/Projects/inProgress/Myc_MAOM/figures", width= 10, height= 12, units="cm")
+  
+gg_inset_map1
+```
+
+### What species were at each site?
+|                |  Cedar  | Maple | Ash | Hemlock | Beech | Birch |
+| -------------  |:-------:|:-----:|:---:|:-------:|:-----:|:-----:|
+| Avery Brook    |         |       |     |   X     |       |   X   |
+| Hubbard Brook  |         |   X   |  X  |   X     |  X    |   X   |
+| Corinth, VT    |    X    |   X   |  X  |         |  X    |       |
+| Long Pond      |    X    |       |     |         |       |       |
+| Moose Mtn      |         |  X    |     |   X     |  X    |       |
+| Mt Moosilauke  |         |  X    |     |         |       |   X   |
+| Roy Mountain   |    X    |       |     |         |       |       |
+
+
+### How did soil texture vary in these sites?
+```{r soiltexture, echo=FALSE, warning=FALSE, message=FALSE, fig.width=12}
+
+clay=ggplot(sites, aes(x=site, y=clay))+geom_bar(stat="identity", fill="#B9684A")+
+  labs(x="Site", y="% Clay")
+silt=ggplot(sites, aes(x=site, y=silt))+geom_bar(stat="identity", fill="#C2956E")+
+  labs(x="Site", y="% Silt")
+sand=ggplot(sites, aes(x=site, y=sand))+geom_bar(stat="identity", fill="#E5D1B8")+
+  labs(x="Site", y="% Sand")
+
+tex1=ggarrange(sand,silt,clay,ncol=3, nrow=1)
+tex1
+
+```  
+
+
+****
+
+
+<!-- ##Hypotheses: -->
+<!-- #### Litter quality will be the primary diver of both POM and MAOM C distribution in soil: a higher proportion of the C in soil will be in the MAOM fraction where the foliar C:N is lower. Conversely, more of the C will be POM where the Foliar C:N is higher. Clay content will likely matter, but we're more concerned with testing the biological drivers. We expect C:N of the different SOM fractions to vary--higher C:N for POM vs MAOM. We also expect the C:N of MAOM to be lower where the Foliar C:N is lower because microbes can effeciently process low C:N litter.  -->
+
+<!-- (current plan is to show figures for the proportions only)<br> -->
+<!-- (current plan is also to hope no one cares we're using foliar C:N to approximate relative litter C:N differences) -->
+
+### Univariate Multiple Regression Models:
+|Model #  | Response Variables   |  Fixed effects                               |  
+|:-------:| ---------------------|:--------------------------------------------:|
+|1        | proportion C in MAOM | Mycorrhizal type<br>Foliar C:N<br>Soil%clay  | 
+|2        | proportion C in POM  | Mycorrhizal type<br>Foliar C:N<br>Soil%clay  |
+|3        | concentration C in MAOM  | Mycorrhizal type<br>Foliar C:N<br>Soil%clay  |  
+|4        | concentration C in POM  | Mycorrhizal type<br>Foliar C:N<br>Soil%clay  |
+|5        | MAOM C:N             | Mycorrhizal type<br>Foliar C:N<br>Soil%clay  | 
+|6        | POM C:N              | Mycorrhizal type<br>Foliar C:N<br>Soil%clay  | 
+<!-- ####Note: % Clay is determined at the site level; there are 7 distinct sites. Foliar C:N is determined at the species level; there are 6 distinct species.    -->
+
+***  
+
+## Results:  
+### Proportion of total C in MAOM fraction is lower in ECM plots and increases with soil clay percentage.  
+```{r ModelpropC.HF, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10}
+
+
+
+c.mod3=lm(propC.as.HF ~ avg_CN + Myc.x + clay, data=myc.maom, na.action = na.omit)
+summary(c.mod3)
+
+
+
+```  
+### Proportion of total C in POM is higher under trees with high foliar C:N and decreases with higher soil clay percentage (more is becoming MAOM in those sites?)
+```{r ModelpropC.FLF, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=10}
+
+
+c.mod4=lm(propC.as.FLF ~ avg_CN + Myc.x + clay, data=myc.maom, na.action = na.omit)
+
+summary(c.mod4)
+
+
+
+```
+## Figure 2:
+```{r figure_propC, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=10}
+
+HF.propC.by.clay=ggplot(myc.maom, aes(x=clay, y=propC.as.HF, colour=Myc.x))+
+   geom_smooth(method="lm",size=2)+
+   geom_point(size=3, alpha=0.5)+
+  scale_colour_manual(values=pretty_pal2)+
+  labs(x=" % Clay ", y="MAOM C (proportion)", colour="Mycorrhizal\nType")+
+  theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+HF.propC.by.cn=ggplot(myc.maom, aes(x=avg_CN, y=propC.as.HF, colour=Myc.x))+
+   geom_smooth(method="lm",size=2, linetype="dashed")+
+   geom_point(size=3, alpha=0.5)+
+  scale_colour_manual(values=pretty_pal2)+
+  labs(x=" Foliar C:N ", y="MAOM C (proportion)", colour="Mycorrhizal\nType")+
+  theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+FLF.propC.by.clay=ggplot(myc.maom, aes(x=clay, y=propC.as.FLF, colour=Myc.x))+
+   geom_smooth(method="lm",size=2)+
+   geom_point(size=3, alpha=0.5)+
+  scale_colour_manual(values=pretty_pal2)+
+  labs(x=" % Clay ", y="POM C (proportion)", colour="Mycorrhizal\nType")+
+  theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+FLF.propC.by.cn=ggplot(myc.maom, aes(x=avg_CN, y=propC.as.FLF, colour=Myc.x))+
+   geom_smooth(method="lm",size=2)+
+   geom_point(size=3, alpha=0.5)+
+  scale_colour_manual(values=pretty_pal2)+
+  labs(x=" Foliar C:N ", y="POM C (proportion)", colour="Mycorrhizal\nType")+
+  theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+
+figure.propC=ggarrange(HF.propC.by.cn, HF.propC.by.clay, FLF.propC.by.cn,  FLF.propC.by.clay, nrow=2, ncol=2, common.legend = TRUE,legend = "right")
+figure.propC
+ggsave("propC.jpg", path="~/Documents/Projects/inProgress/Myc_MAOM/figures", scale=1, width= 21, height= 18, units="cm")
+
+
+```
+
+***  
+
+### Concentration of MAOM C lower under high C:N litter, but only in AM plots, and decreases with clay because there’s lower [C] in the higher clay sites overall.
+```{r ModelconcC.HF, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10}
+
+c.mod1=lm(HF.mgC.per.g.soil ~ avg_CN*Myc.x + clay, data=myc.maom, na.action = na.omit)
+
+summary(c.mod1)
+
+```  
+
+***  
+
+
+### Lower POM [C] where there's more clay because lower [C] overall in those sites. 
+```{r ModelconcC.FLF, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10}
+
+c.mod2=lm(FLF.mgC.per.g.soil ~ avg_CN + Myc.x + clay, data=myc.maom, na.action = na.omit)
+
+summary(c.mod2)
+
+  
+```
+## Concentrations of MAOM and POM C:
+```{r figConcC, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=8}
+HF.mgC.by.clay=ggplot(myc.maom, aes(x=clay, y=HF.mgC.per.g.soil, colour=Myc.x))+
+   geom_smooth(method="lm",size=2)+
+   geom_point(size=3, alpha=0.5)+
+  scale_colour_manual(values=pretty_pal2)+
+  labs(x=" % Clay ", y=expression(paste("MAOM C (mg [g soil]"^"-1",paste(")"))), colour="Mycorrhizal\nType")+
+  theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+HF.mgC.by.cn=ggplot(myc.maom, aes(x=avg_CN, y=HF.mgC.per.g.soil, colour=Myc.x, linetype=Myc.x))+
+  guides(linetype=FALSE)+
+  scale_linetype_manual(values=c("solid", "dashed"))+
+   geom_smooth(method="lm",size=2)+
+   geom_point(size=3, alpha=0.5)+
+  scale_colour_manual(values=pretty_pal2)+
+  labs(x=" Foliar C:N ", y=expression(paste("MAOM C (mg [g soil]"^"-1",paste(")"))), colour="Mycorrhizal\nType")+
+  theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+FLF.mgC.by.clay=ggplot(myc.maom, aes(x=clay, y=FLF.mgC.per.g.soil, colour=Myc.x))+
+   geom_smooth(method="lm",size=2)+
+   geom_point(size=3, alpha=0.5)+
+  scale_colour_manual(values=pretty_pal2)+
+  labs(x=" % Clay ", y=expression(paste("POM C (mg [g soil]"^"-1",paste(")"))), colour="Mycorrhizal\nType")+
+  theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+FLF.mgC.by.cn=ggplot(myc.maom, aes(x=avg_CN, y=FLF.mgC.per.g.soil, colour=Myc.x))+
+   geom_smooth(method="lm",size=2, linetype="dashed")+
+   geom_point(size=3, alpha=0.5)+
+  scale_colour_manual(values=pretty_pal2)+
+  labs(x=" Foliar C:N ", y=expression(paste("POM C (mg [g soil]"^"-1",paste(")"))), colour="Mycorrhizal\nType")+
+  theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+
+figure.concC=ggarrange(HF.mgC.by.cn, HF.mgC.by.clay, FLF.mgC.by.cn, FLF.mgC.by.clay, nrow=2, ncol=2, common.legend = TRUE, legend = "right")
+figure.concC
+ggsave("concC.jpg", path="~/Documents/Projects/inProgress/Myc_MAOM/figures", width= 21, height= 18, units="cm")
+
+
+```
+
+***  
+
+
+#### To explain the decline in both POM and MAOM C and N concentrations with increasing % clay, we can show there is just a higher concentration of C (bulk mineral soil) where theres less clay. This may be due to chance (few sites) or could be that higher elevation sites are colder (more C) and have less clay because they are on slopes. We also see a significant decline in bulk mineral soil % C with increasing Foliar C:N.
+
+
+```{r clayC, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=4}
+
+myc.maom.minC= myc.maom.long %>% 
+  filter(variable=="min.pct.C")
+summary(lm(value.as.fraction~clay, data=myc.maom.minC))
+summary(lm(value.as.fraction~avg_CN, data=myc.maom.minC))
+
+minC.by.clay=ggplot(myc.maom.minC, aes(x=clay, y=value.as.fraction))+
+   geom_smooth(method="lm",size=2, colour="black")+
+  geom_point(size=3, alpha=0.5)+
+  geom_text(x=6, y=12, label="p = 0.0004")+
+  labs(x=" % Clay ", y="Mineral Soil %C")+
+  theme_cowplot()
+ 
+
+minC.by.litter.cn=ggplot(myc.maom.minC, aes(x=avg_CN, y=value.as.fraction))+
+   geom_smooth(method="lm",size=2, colour="black")+
+  geom_point(size=3, alpha=0.5)+
+    geom_text(x=40, y=12, label="p = 0.016")+
+  labs(x="Foliar C:N ", y="Mineral Soil %C")+
+  theme_cowplot()
+
+```
+
+
+```{r figs1, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=4}
+figuresiteC=ggarrange(minC.by.clay, minC.by.litter.cn, nrow=1, ncol=2)
+figuresiteC
+ggsave("concCbyClay.jpg", path="~/Documents/Projects/inProgress/Myc_MAOM/figures", width= 18, height= 10, units="cm")
+
+ 
+```
+
+***  
+
+### MAOM C:N is lower in AM-dominated stands, lower where there's more clay, and higher where the litter is nasty.
+
+```{r CN_MAOM,  echo=FALSE, warning=FALSE, message=FALSE, fig.width=10}
+#Need to massage this df a bit...
+myc.maom.cn=myc.maom %>% 
+  select(uid, Myc.x, clay, avg_CN, FLF.pct.C, FLF.pct.N, HF.pct.C, HF.pct.N) %>% 
+  mutate(FLF.cn= FLF.pct.C/FLF.pct.N,
+         HF.cn=HF.pct.C/HF.pct.N) 
+
+som.cn.summary=myc.maom.cn %>% 
+  group_by(Myc.x) %>% 
+  summarise(mean.maom.cn=mean(HF.cn),
+            mean.POM.cn=mean(FLF.cn[!is.na(FLF.cn)]))
+
+myc.maom.cn.long=myc.maom.cn%>% 
+   pivot_longer(c(FLF.cn, HF.cn), names_to= "Fraction", values_to="C.N") %>%
+   mutate(fraction = case_when(stri_detect_fixed(Fraction, "FLF") ~ "FLF",
+                               TRUE  ~ "HF"))
+
+
+cn_mod_hf=lm(HF.cn ~ Myc.x + avg_CN + clay, data=myc.maom.cn, na.action=na.omit)
+
+summary(cn_mod_hf)
+```
+
+
+***  
+
+### POM C:N tracks foliar C:N (this is likely because it still *is* basically litter)
+```{r CN_POM,  echo=FALSE, warning=FALSE, message=FALSE, fig.width=10}
+
+cn_mod_flf=lm(FLF.cn ~ Myc.x + avg_CN + clay, data=myc.maom.cn, na.action=na.omit)
+
+summary(cn_mod_flf)
+
+```
+
+```{r fig4, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=8}
+maom.cn.vs.litter=ggplot(myc.maom.cn, aes(x=avg_CN, y=HF.cn, colour=Myc.x))+
+    geom_smooth(method="lm",size=2)+
+   geom_point(size=3, alpha=0.5)+
+   scale_colour_manual(values=pretty_pal2)+
+   labs(x="Foliar C:N ", y="MAOM C:N", colour="Mycorrhizal\nType")+
+   theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+ 
+maom.cn.vs.clay=ggplot(myc.maom.cn, aes(x=clay, y=HF.cn, colour=Myc.x))+
+    geom_smooth(method="lm",size=2)+
+   geom_point(size=3, alpha=0.5)+
+   scale_colour_manual(values=pretty_pal2)+
+   labs(x=" % Clay ", y="MAOM C:N", colour="Mycorrhizal\nType")+
+   theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+pom.cn.vs.litter=ggplot(myc.maom.cn, aes(x=avg_CN, y=FLF.cn, colour=Myc.x))+
+    geom_smooth(method="lm",size=2)+
+   geom_point(size=3, alpha=0.5)+
+   scale_colour_manual(values=pretty_pal2)+
+   labs(x="Foliar C:N ", y="POM C:N", colour="Mycorrhizal\nType")+
+   theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+pom.cn.vs.clay=ggplot(myc.maom.cn, aes(x=clay, y=FLF.cn, colour=Myc.x))+
+    geom_smooth(method="lm",size=2)+
+   geom_point(size=3, alpha=0.5)+
+   scale_colour_manual(values=pretty_pal2)+
+   labs(x=" % Clay ", y="POM C:N", colour="Mycorrhizal\nType")+
+   theme_cowplot()+
+  theme(legend.title=element_text(hjust=0.5))
+
+
+figure.maom.pom.cn=ggarrange(maom.cn.vs.litter, maom.cn.vs.clay, pom.cn.vs.litter, pom.cn.vs.clay, nrow=2, ncol=2, common.legend=TRUE,legend = "right")
+figure.maom.pom.cn
+ggsave("cn.jpg", path="~/Documents/Projects/inProgress/Myc_MAOM/figures", width= 21, height= 18, units="cm")
+
+
+
+```
+
+### No effect of mycorrhizal type on POM C:N is evidence that our study design was effective! 
+
+<!-- ##C:N can tell us about nitrogen: -->
+<!-- ###1. MAOM C:N decreases with clay content, showing that where there's more clay, the microbial residues are more effectively stabilized in the soil? -->
+<!-- ###2. MAOM C:N also tracks foliar C:N, showing that microbes can more efficiently decompose low C:N litter -->
+<!-- ###3. N distribution as MAOM vs POM tracks C generally, but changes in C:N indicate that there are subtle differences in controls on N vs C sequestration in soil.  -->
+<!-- ###4. Results indicate that POM starting from the same C:N is processed differently in AM vs ECM stands, resulting in lower C:N for the most stable SOM in AM stands. -->
+<!-- ###5. Takeaway: N seems to be retained better in AM stands? -->
+
+***  
+
+
+
+```{r distributions, echo=FALSE, warning=FALSE, message=FALSE, fig.height=20, fig.width=12, include=FALSE, eval=FALSE}
+
+dist.litt.cn=ggplot(myc.maom.mgC, aes(x=avg_CN))+
+  geom_histogram(binwidth=5, color= "black",fill="white")+
+  theme_cowplot()+
+  labs(x="Foliar C:N", y="count")
+
+
+dist.pct.clay=ggplot(myc.maom.mgC, aes(x=clay))+
+  geom_histogram(binwidth=1, color= "black",fill="white")+
+  theme_cowplot()+
+  labs(x="% Clay", y="count")
+
+
+a=ggplot(myc.maom.mgC, aes(x=value.as.fraction))+
+  geom_histogram(binwidth=3, color= "black",fill="white")+
+  theme_cowplot()+
+  facet_wrap(fraction~.,scales= "free")+
+  labs(x="mg C per g soil", y="count")
+
+b=ggplot(myc.maom.propC, aes(x=value.as.fraction))+
+  geom_histogram(binwidth=.1, color= "black",fill="white")+
+  theme_cowplot()+
+  facet_wrap(fraction~.,scales= "free")+
+  labs(x="proportion C in each fraction", y="count")
+
+c=ggplot(myc.maom.mgN, aes(x=value.as.fraction))+
+  geom_histogram(binwidth=.15, color= "black",fill="white")+
+  theme_cowplot()+
+  facet_wrap(fraction~.,scales= "free")+
+  labs(x="mg N per g soil", y="count")
+
+d=ggplot(myc.maom.propN, aes(x=value.as.fraction))+
+  geom_histogram(binwidth=.05, color= "black",fill="white")+
+  theme_cowplot()+
+  facet_wrap(fraction~.,scales= "free")+
+  labs(x="proportion N in each fraction", y="count")
+
+summary1=ggarrange(dist.litt.cn, dist.pct.clay, a,b,c,d,ncol=1, nrow=6)
+summary1
+
+
+```
+
+```{r soilCNlitterCN, echo=FALSE, warning=FALSE, message=FALSE, fig.width=12, fig.height=14, eval=FALSE, include=FALSE}
+
+myc.maom.short=myc.maom %>% 
+  group_by(species) %>% 
+  mutate(FLF.CN= gC.as.FLF/gN.as.FLF,
+           OLF.CN= gC.as.OLF/gN.as.OLF,
+           HF.CN= gC.as.HF/ gN.as.HF) %>% 
+  summarise(avg_oh.CN=mean(org.CN),
+            se_oh.CN=(sd(org.CN, na.rm=TRUE) /  
+           sqrt(length(org.CN[!is.na(org.CN)]))),
+           avg_oh.depth=mean(O.horizon.depth, na.rm=TRUE),
+            se_oh.depth=(sd(O.horizon.depth, na.rm=TRUE) /  
+           sqrt(length(O.horizon.depth[!is.na(O.horizon.depth)]))),
+           avg_FLF.CN=mean(FLF.CN),
+            se_FLF.CN=(sd(FLF.CN, na.rm=TRUE) /  
+           sqrt(length(FLF.CN[!is.na(FLF.CN)]))),
+           avg_OLF.CN=mean(OLF.CN),
+            se_OLF.CN=(sd(OLF.CN, na.rm=TRUE) /  
+           sqrt(length(OLF.CN[!is.na(OLF.CN)]))),
+           avg_HF.CN=mean(HF.CN),
+            se_HF.CN=(sd(HF.CN, na.rm=TRUE) /  
+           sqrt(length(HF.CN[!is.na(HF.CN)]))))
+
+myc.maom.site=myc.maom %>% 
+  group_by(Site) %>% 
+  summarise(avg_min.C=mean(min.pct.C),
+            se_min.C=(sd(min.pct.C, na.rm=TRUE) /  
+           sqrt(length(min.pct.C[!is.na(min.pct.C)]))),
+           avg_min.N=mean(min.pct.N),
+            se_min.N=(sd(min.pct.N, na.rm=TRUE) /  
+           sqrt(length(min.pct.N[!is.na(min.pct.N)]))),
+           avg_O_depth=mean(O.horizon.depth, na.rm=TRUE),
+           se_O_depth=(sd(O.horizon.depth, na.rm=TRUE) /  
+           sqrt(length(O.horizon.depth[!is.na(O.horizon.depth)]))))
+
+ohorizoncn=ggplot(data=myc.maom.short, aes(x=species, y=avg_oh.CN, fill=Myc))+
+  geom_bar(position = "dodge", stat = "summary", fun.y = "mean")+
+    scale_fill_manual(values= pretty_pal2)+
+  labs(x=" ", y="O Horizon C:N")+
+  theme_cowplot()+
+  geom_errorbar(aes(ymin=avg_oh.CN-se_oh.CN, ymax=avg_oh.CN+se_oh.CN), width=0.2, size=0.25, colour="black", linetype="solid")
+
+flf.cn=ggplot(data=myc.maom.short, aes(x=species, y=avg_FLF.CN, fill=Myc))+
+  geom_bar(position = "dodge", stat = "summary", fun.y = "mean")+
+    scale_fill_manual(values= pretty_pal2)+
+  labs(x=" ", y="FLF C:N")+
+  theme_cowplot()+
+  geom_errorbar(aes(ymin=avg_FLF.CN-se_FLF.CN, ymax=avg_FLF.CN+se_FLF.CN), width=0.2, size=0.25, colour="black", linetype="solid")
+
+  
+  olf.cn=ggplot(data=myc.maom.short, aes(x=species, y=avg_OLF.CN, fill=Myc))+
+  geom_bar(position = "dodge", stat = "summary", fun.y = "mean")+
+    scale_fill_manual(values= pretty_pal2)+
+  labs(x=" ", y="OLF C:N")+
+  theme_cowplot()+
+  geom_errorbar(aes(ymin=avg_OLF.CN-se_OLF.CN, ymax=avg_OLF.CN+se_OLF.CN), width=0.2, size=0.25, colour="black", linetype="solid")
+
+  
+  hf.cn=ggplot(data=myc.maom.short, aes(x=species, y=avg_HF.CN, fill=Myc))+
+  geom_bar(position = "dodge", stat = "summary", fun.y = "mean")+
+    scale_fill_manual(values= pretty_pal2)+
+  labs(x=" ", y="HF C:N")+
+  theme_cowplot()+
+  geom_errorbar(aes(ymin=avg_HF.CN-se_HF.CN, ymax=avg_HF.CN+se_HF.CN), width=0.2, size=0.25, colour="black", linetype="solid")
+
+
+soilcn=ggarrange(littercn, ohorizoncn, flf.cn, olf.cn, hf.cn,nrow=3, ncol=2, common.legend = TRUE)
+soilcn
+
+
+
+```
+
+
+
+
+
