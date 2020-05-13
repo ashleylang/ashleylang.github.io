@@ -221,7 +221,8 @@ pretty_pal2=c("#4ca489", "#264737", "darkseagreen1")
 
 ## What controls the distribution of POM vs MAOM C  in forest soil?
 
-*Recent studies indicate that ecosystems dominated by vegetation associated with AM fungi store more soil organic matter (SOM) as mineral-associated organic matter (MAOM) rather than particulate organic matter (POM)*  
+## Quick Summary
+### *Recent studies indicate that ecosystems dominated by vegetation associated with AM fungi store more soil organic matter (SOM) as mineral-associated organic matter (MAOM) rather than particulate organic matter (POM), but plant mycorrhizal associations are often correlated with plant litter chemistry. We sought to disentangle these potential drivers of MAOM content in forests across New Hampshire and Vermont.*  
 
 **But what are MAOM and POM?**
 
@@ -231,26 +232,27 @@ Particulate organic matter (POM) is more or less the "bits" of leaves and roots 
 
 Based on this information, we may expect litter quality to affect the amount of POM in soil. But things get a little more complicated when we think about the formation of MAOM. Since MAOM is organic matter that has traveled further along in the decomposition process, it is the product of all the microbial activity that modified it in these various stages of decay. In short, the more *efficiently* the microbial community can decompose organic matter, the more microbial biomass is generated in the soil, and the faster the production of the organic residues and microbial necromass that are the putative precursors of MAOM. Certain microbes are more efficient at decomposition than others, and microbes are all generally more efficient decomposers when the chemistry of the organic matter they are using is less complex. Therefore, MAOM formation depends both on the activity and composition of the microbes conducting decomposition as well as the chemistry of the organic matter available for decomposition.
 
-To recap: MAOM formation is probably affected by... 
+**To recap: MAOM formation is probably affected by...**   
 1. The quality of the litter inputs to the soil  
 2. The microbial community in the soil
 
 *Other controls that are important to consider:  
-1. Mineral composition of the soil in each site (aka what minerals are available for MAOM to stick to!)
+1. Mineral composition of the soil in each site (aka what minerals are available for MAOM to stick to!)  
 2. Other traits of the trees themselves (root turnover rate, above:belowground biomass, etc)*
 
 
-In this study, we investigated these controls on MAOM content by measuring MAOM and POM content beneath six tree species that vary in litter quality and have different microbes in their rhizospheres. We are using the tree's mycorrhizal associations as a proxy for the general composition of the microbial communities in the soil.
+In this study, we investigated these controls on MAOM content by measuring MAOM and POM content beneath six tree species that vary in litter quality and have different microbes in their rhizospheres. We are using the tree's mycorrhizal associations as a proxy for the general composition of the microbial communities in the soil.  
 
-Tree Species
+Tree Species  
 
 | Litter Quality |        AM            |        ECM      |
 | -------------  |:--------------------:| :--------------:|
 | High           | White Ash            |    Yellow Birch |
 | Medium         | Sugar Maple          | American Beech  |
-| Low            | Northern White Cedar | Eastern Hemlock |
+| Low            | Northern White Cedar | Eastern Hemlock |  
 
-## We can see the variation in foliar chemistry within each mycorrhizal classification:
+
+## We can see the variation in foliar chemistry within each mycorrhizal classification:  
 
 ```{r ligninN, echo=FALSE, warning=F, message=F, fig.width=7}
 
@@ -276,7 +278,7 @@ litter=ggarrange(littercn, litterlign, ncol=2)
 
 ```
 
-## And to orient yourself, here is where this all took place. We measured MAOM and POM beneath these trees at a variety of sites to make sure we captured the full range of soil contditions that may be found where these species tend to grow.
+## And to orient yourself, here is where this all took place. We measured MAOM and POM beneath these trees at a variety of sites to make sure we captured the full range of soil contditions that may be found where these species tend to grow.  
 
 ```{r map, echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -309,7 +311,7 @@ gg_inset_map1
 ```
 
 
-### Soil texture varied from site to site, with some sites having more clay than others:
+### Soil texture varied from site to site, with some sites having more clay than others:  
 ```{r soiltexture, echo=FALSE, warning=FALSE, message=FALSE, fig.width=12}
 
 clay=ggplot(sites, aes(x=site, y=clay))+geom_bar(stat="identity", fill="#B9684A")+
@@ -327,7 +329,7 @@ tex1
 
 ****
 
-### We tested how mycorrhizal associations, foliar chemistry, and clay content affected the proportion of total soil carbon found in the MAOM vs POM, and the C:N of both the MAOM and POM
+### We tested how mycorrhizal associations, foliar chemistry, and clay content affected the proportion of total soil carbon found in the MAOM vs POM, and the C:N of both the MAOM and POM  
 |Model #  | Response Variables   |  Fixed effects                               |  
 |:-------:| ---------------------|:--------------------------------------------:|
 |1        | proportion C in MAOM | Mycorrhizal type<br>Foliar C:N<br>Soil%clay  | 
@@ -339,7 +341,7 @@ Remember: % Clay was determined at the site level; there are 7 distinct sites. F
 ***  
 
 ## Results:  
-### Proportion of total C in MAOM fraction is lower in ECM plots and increases with soil clay percentage.  
+### Proportion of total C in MAOM fraction is lower in ECM plots and increases with soil clay percentage.   
 ```{r ModelpropC.HF, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, include=FALSE}
 
 
@@ -350,7 +352,7 @@ summary(c.mod3)
 
 
 ```  
-### Proportion of total C in POM is higher under trees with high foliar C:N and decreases with higher soil clay percentage. 
+### Proportion of total C in POM is higher under trees with high foliar C:N and decreases with higher soil clay percentage.  
 ```{r ModelpropC.FLF, echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=10, include=FALSE}
 
 
@@ -406,7 +408,7 @@ ggsave("propC.jpg", path="~/Documents/Projects/inProgress/Myc_MAOM/figures", sca
 
 ***  
 
-### MAOM C:N is lower in AM-dominated stands, lower where there's more clay, and higher where the litter is nasty.
+### MAOM C:N is lower in AM-dominated stands, lower where there's more clay, and higher where the litter is nasty.  
 
 ```{r CN_MAOM,  echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, include=FALSE}
 #Need to massage this df a bit...
@@ -431,8 +433,8 @@ cn_mod_hf=lm(HF.cn ~ Myc.x + avg_CN + clay, data=myc.maom.cn, na.action=na.omit)
 summary(cn_mod_hf)
 ```
 
-### POM C:N tracks foliar C:N (this is likely because it still *is* basically litter... and no effect of mycorrhizal type on POM C:N is evidence that our study design was effective!) 
-```{r CN_POM,  echo=FALSE, warning=FALSE, message=FALSE, fig.width=10}
+### POM C:N tracks foliar C:N (this is likely because it still *is* basically litter... and no effect of mycorrhizal type on POM C:N is evidence that our study design was effective!)   
+```{r CN_POM,  echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, include=FALSE}
 
 cn_mod_flf=lm(FLF.cn ~ Myc.x + avg_CN + clay, data=myc.maom.cn, na.action=na.omit)
 
@@ -482,14 +484,9 @@ ggsave("cn.jpg", path="~/Documents/Projects/inProgress/Myc_MAOM/figures", width=
 
 ```
 
+##Take-home message: More of the C in soil beneath AM-associated trees (vs. ECM-associated trees) becomes associated with minerals in soil, even when the chemistry of the incoming litter is really complex (like cedar leaves!). This means AM-dominated forests may send less soil C to the atmosphere than ECM-dominated forests as the earth gets warmer (and in the case of New England, wetter). This stable pool of MAOM is also higher in nitrogen than the MAOM beneath ECM trees, which may come in handy as a reserve of soil N to fuel plant and microbial productivity. These data support the use of mycorrhizal associations as predictors of soil organic matter dynamics in addition to foliar chemistry and soil mineralogy.
 
 
-<!-- ##C:N can tell us about nitrogen: -->
-<!-- ###1. MAOM C:N decreases with clay content, showing that where there's more clay, the microbial residues are more effectively stabilized in the soil? -->
-<!-- ###2. MAOM C:N also tracks foliar C:N, showing that microbes can more efficiently decompose low C:N litter -->
-<!-- ###3. N distribution as MAOM vs POM tracks C generally, but changes in C:N indicate that there are subtle differences in controls on N vs C sequestration in soil.  -->
-<!-- ###4. Results indicate that POM starting from the same C:N is processed differently in AM vs ECM stands, resulting in lower C:N for the most stable SOM in AM stands. -->
-<!-- ###5. Takeaway: N seems to be retained better in AM stands? -->
 
 ***  
 

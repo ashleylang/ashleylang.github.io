@@ -308,15 +308,21 @@ $(document).ready(function () {
 <hr />
 <div id="what-controls-the-distribution-of-pom-vs-maom-c-in-forest-soil" class="section level2">
 <h2>What controls the distribution of POM vs MAOM C in forest soil?</h2>
-<p><em>Recent studies indicate that ecosystems dominated by vegetation associated with AM fungi store more soil organic matter (SOM) as mineral-associated organic matter (MAOM) rather than particulate organic matter (POM)</em></p>
+</div>
+<div id="quick-summary" class="section level2">
+<h2>Quick Summary</h2>
+<div id="recent-studies-indicate-that-ecosystems-dominated-by-vegetation-associated-with-am-fungi-store-more-soil-organic-matter-som-as-mineral-associated-organic-matter-maom-rather-than-particulate-organic-matter-pom-but-plant-mycorrhizal-associations-are-often-correlated-with-plant-litter-chemistry.-we-sought-to-disentangle-these-potential-drivers-of-maom-content-in-forests-across-new-hampshire-and-vermont." class="section level3">
+<h3><em>Recent studies indicate that ecosystems dominated by vegetation associated with AM fungi store more soil organic matter (SOM) as mineral-associated organic matter (MAOM) rather than particulate organic matter (POM), but plant mycorrhizal associations are often correlated with plant litter chemistry. We sought to disentangle these potential drivers of MAOM content in forests across New Hampshire and Vermont.</em></h3>
 <p><strong>But what are MAOM and POM?</strong></p>
 <p>Mineral-associated organic matter (MAOM) is increasingly recognized as a stable and long-term pool of soil carbon and nutrients. Recent work suggests MAOM is primarily of microbial origin, composed of microbial necromass and highly decomposed organic matter residues. These low-molecular weight organic compounds form strong bonds with mineral surfaces, particularly clays and metal oxides. Because these organo-mineral bonds restrict the access of decomposers to MAOM molecules, this material may persist in soil for centuries to millennia. Further, because its long-term stability is based on physical barriers that prevent microbial access rather than energetic constraints on decomposers, MAOM may be less susceptible to decay with increasing soil temperature.</p>
 <p>Particulate organic matter (POM) is more or less the “bits” of leaves and roots that remain relatively undecomposed in soil. You can think of POM as organic matter that is not quite done breaking down. Sometimes this decomposition takes a long time, and carbon and nutrients can be stored as POM for years. This is especially true when the chemistry of the original material is complex (in other words, hard for microbes to break apart). Wood, pine needles, thick, waxy leaves, and leaves with a lot of lignin may be considered complex litter material, while thinner, more nitrogen-rich leaves are less complex and easier for microbes to break down.</p>
 <p>Based on this information, we may expect litter quality to affect the amount of POM in soil. But things get a little more complicated when we think about the formation of MAOM. Since MAOM is organic matter that has traveled further along in the decomposition process, it is the product of all the microbial activity that modified it in these various stages of decay. In short, the more <em>efficiently</em> the microbial community can decompose organic matter, the more microbial biomass is generated in the soil, and the faster the production of the organic residues and microbial necromass that are the putative precursors of MAOM. Certain microbes are more efficient at decomposition than others, and microbes are all generally more efficient decomposers when the chemistry of the organic matter they are using is less complex. Therefore, MAOM formation depends both on the activity and composition of the microbes conducting decomposition as well as the chemistry of the organic matter available for decomposition.</p>
-<p>To recap: MAOM formation is probably affected by… 1. The quality of the litter inputs to the soil<br />
+<p><strong>To recap: MAOM formation is probably affected by…</strong><br />
+1. The quality of the litter inputs to the soil<br />
 2. The microbial community in the soil</p>
 <p><em>Other controls that are important to consider:<br />
-1. Mineral composition of the soil in each site (aka what minerals are available for MAOM to stick to!) 2. Other traits of the trees themselves (root turnover rate, above:belowground biomass, etc)</em></p>
+1. Mineral composition of the soil in each site (aka what minerals are available for MAOM to stick to!)<br />
+2. Other traits of the trees themselves (root turnover rate, above:belowground biomass, etc)</em></p>
 <p>In this study, we investigated these controls on MAOM content by measuring MAOM and POM content beneath six tree species that vary in litter quality and have different microbes in their rhizospheres. We are using the tree’s mycorrhizal associations as a proxy for the general composition of the microbial communities in the soil.</p>
 <p>Tree Species</p>
 <table>
@@ -345,6 +351,7 @@ $(document).ready(function () {
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 <div id="we-can-see-the-variation-in-foliar-chemistry-within-each-mycorrhizal-classification" class="section level2">
 <h2>We can see the variation in foliar chemistry within each mycorrhizal classification:</h2>
@@ -410,35 +417,8 @@ $(document).ready(function () {
 </div>
 <div id="pom-cn-tracks-foliar-cn-this-is-likely-because-it-still-is-basically-litter-and-no-effect-of-mycorrhizal-type-on-pom-cn-is-evidence-that-our-study-design-was-effective" class="section level3">
 <h3>POM C:N tracks foliar C:N (this is likely because it still <em>is</em> basically litter… and no effect of mycorrhizal type on POM C:N is evidence that our study design was effective!)</h3>
-<pre><code>## 
-## Call:
-## lm(formula = FLF.cn ~ Myc.x + avg_CN + clay, data = myc.maom.cn, 
-##     na.action = na.omit)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -16.3127  -2.5627   0.0034   2.6696  21.0746 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 17.65330    3.41143   5.175 3.44e-06 ***
-## Myc.xECM     0.50906    1.60303   0.318  0.75204    
-## avg_CN       0.23859    0.06893   3.461  0.00106 ** 
-## clay         1.37934    0.48228   2.860  0.00601 ** 
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 6.031 on 54 degrees of freedom
-##   (2 observations deleted due to missingness)
-## Multiple R-squared:  0.2903, Adjusted R-squared:  0.2509 
-## F-statistic: 7.362 on 3 and 54 DF,  p-value: 0.0003182</code></pre>
 <p><img src="myc_maom_sitepage_files/figure-html/fig4-1.png" width="1920" /></p>
-<!-- ##C:N can tell us about nitrogen: -->
-<!-- ###1. MAOM C:N decreases with clay content, showing that where there's more clay, the microbial residues are more effectively stabilized in the soil? -->
-<!-- ###2. MAOM C:N also tracks foliar C:N, showing that microbes can more efficiently decompose low C:N litter -->
-<!-- ###3. N distribution as MAOM vs POM tracks C generally, but changes in C:N indicate that there are subtle differences in controls on N vs C sequestration in soil.  -->
-<!-- ###4. Results indicate that POM starting from the same C:N is processed differently in AM vs ECM stands, resulting in lower C:N for the most stable SOM in AM stands. -->
-<!-- ###5. Takeaway: N seems to be retained better in AM stands? -->
+<p>##Take-home message: More of the C in soil beneath AM-associated trees (vs. ECM-associated trees) becomes associated with minerals in soil, even when the chemistry of the incoming litter is really complex (like cedar leaves!). This means AM-dominated forests may send less soil C to the atmosphere than ECM-dominated forests as the earth gets warmer (and in the case of New England, wetter). This stable pool of MAOM is also higher in nitrogen than the MAOM beneath ECM trees, which may come in handy as a reserve of soil N to fuel plant and microbial productivity. These data support the use of mycorrhizal associations as predictors of soil organic matter dynamics in addition to foliar chemistry and soil mineralogy.</p>
 <hr />
 </div>
 </div>
