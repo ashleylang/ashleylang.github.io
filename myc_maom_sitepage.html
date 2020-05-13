@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>MAOM</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Ashley Lang</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="myc_maom_sitepage.html">Mycorrhizae and MAOM</a>
+</li>
+<li>
+  <a href="research.html">Soil respiration</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">MAOM</h1>
+
+</div>
+
+
+<style type="text/css">
+.table {
+
+    width: 50%;
+
+}
+</style>
+<hr />
+<div id="what-controls-the-distribution-of-pom-vs-maom-c-and-n-in-forest-soil" class="section level2">
+<h2>What controls the distribution of POM vs MAOM C and N in forest soil?</h2>
+<p><em>Possible controls:</em><br />
+1. The quality of the litter inputs to the soil<br />
+2. The mycorrhizal association of nearby trees</p>
+<p><em>Other controls that are important to consider:<br />
+1. Mineral composition of the soil in each site<br />
+2. Other traits of the trees themselves (root turnover rate, above:belowground biomass, something else entirely??)</em></p>
+<div id="tree-species" class="section level3">
+<h3>Tree Species</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Litter Quality</th>
+<th align="center">AM</th>
+<th align="center">ECM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>High</td>
+<td align="center">White Ash</td>
+<td align="center">Yellow Birch</td>
+</tr>
+<tr class="even">
+<td>Medium</td>
+<td align="center">Sugar Maple</td>
+<td align="center">American Beech</td>
+</tr>
+<tr class="odd">
+<td>Low</td>
+<td align="center">Northern White Cedar</td>
+<td align="center">Eastern Hemlock</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="figure-1" class="section level2">
+<h2>Figure 1:</h2>
+<p><img src="myc_maom_sitepage_files/figure-html/ligninN-1.png" width="672" /></p>
+</div>
+<div id="site-map" class="section level2">
+<h2>Site Map:</h2>
+<p><img src="myc_maom_sitepage_files/figure-html/map-1.png" width="672" /></p>
+<div id="what-species-were-at-each-site" class="section level3">
+<h3>What species were at each site?</h3>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="center">Cedar</th>
+<th align="center">Maple</th>
+<th align="center">Ash</th>
+<th align="center">Hemlock</th>
+<th align="center">Beech</th>
+<th align="center">Birch</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Avery Brook</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">X</td>
+<td align="center"></td>
+<td align="center">X</td>
+</tr>
+<tr class="even">
+<td>Hubbard Brook</td>
+<td align="center"></td>
+<td align="center">X</td>
+<td align="center">X</td>
+<td align="center">X</td>
+<td align="center">X</td>
+<td align="center">X</td>
+</tr>
+<tr class="odd">
+<td>Corinth, VT</td>
+<td align="center">X</td>
+<td align="center">X</td>
+<td align="center">X</td>
+<td align="center"></td>
+<td align="center">X</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td>Long Pond</td>
+<td align="center">X</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td>Moose Mtn</td>
+<td align="center"></td>
+<td align="center">X</td>
+<td align="center"></td>
+<td align="center">X</td>
+<td align="center">X</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td>Mt Moosilauke</td>
+<td align="center"></td>
+<td align="center">X</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">X</td>
+</tr>
+<tr class="odd">
+<td>Roy Mountain</td>
+<td align="center">X</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="how-did-soil-texture-vary-in-these-sites" class="section level3">
+<h3>How did soil texture vary in these sites?</h3>
+<p><img src="myc_maom_sitepage_files/figure-html/soiltexture-1.png" width="1152" /></p>
+<hr />
+<!-- ##Hypotheses: -->
+<!-- #### Litter quality will be the primary diver of both POM and MAOM C distribution in soil: a higher proportion of the C in soil will be in the MAOM fraction where the foliar C:N is lower. Conversely, more of the C will be POM where the Foliar C:N is higher. Clay content will likely matter, but we're more concerned with testing the biological drivers. We expect C:N of the different SOM fractions to vary--higher C:N for POM vs MAOM. We also expect the C:N of MAOM to be lower where the Foliar C:N is lower because microbes can effeciently process low C:N litter.  -->
+<!-- (current plan is to show figures for the proportions only)<br> -->
+<!-- (current plan is also to hope no one cares we're using foliar C:N to approximate relative litter C:N differences) -->
+</div>
+<div id="univariate-multiple-regression-models" class="section level3">
+<h3>Univariate Multiple Regression Models:</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Model #</th>
+<th>Response Variables</th>
+<th align="center">Fixed effects</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td>proportion C in MAOM</td>
+<td align="center">Mycorrhizal type<br>Foliar C:N<br>Soil%clay</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td>proportion C in POM</td>
+<td align="center">Mycorrhizal type<br>Foliar C:N<br>Soil%clay</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td>concentration C in MAOM</td>
+<td align="center">Mycorrhizal type<br>Foliar C:N<br>Soil%clay</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td>concentration C in POM</td>
+<td align="center">Mycorrhizal type<br>Foliar C:N<br>Soil%clay</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td>MAOM C:N</td>
+<td align="center">Mycorrhizal type<br>Foliar C:N<br>Soil%clay</td>
+</tr>
+<tr class="even">
+<td align="center">6</td>
+<td>POM C:N</td>
+<td align="center">Mycorrhizal type<br>Foliar C:N<br>Soil%clay</td>
+</tr>
+</tbody>
+</table>
+<!-- ####Note: % Clay is determined at the site level; there are 7 distinct sites. Foliar C:N is determined at the species level; there are 6 distinct species.    -->
+<hr />
+</div>
+</div>
+<div id="results" class="section level2">
+<h2>Results:</h2>
+<div id="proportion-of-total-c-in-maom-fraction-is-lower-in-ecm-plots-and-increases-with-soil-clay-percentage." class="section level3">
+<h3>Proportion of total C in MAOM fraction is lower in ECM plots and increases with soil clay percentage.</h3>
+<pre><code>## 
+## Call:
+## lm(formula = propC.as.HF ~ avg_CN + Myc.x + clay, data = myc.maom, 
+##     na.action = na.omit)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.33646 -0.05434  0.01238  0.07325  0.19422 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.686216   0.062819  10.924  3.5e-15 ***
+## avg_CN      -0.000342   0.001274  -0.268  0.78944    
+## Myc.xECM    -0.062727   0.029861  -2.101  0.04044 *  
+## clay         0.025520   0.008943   2.854  0.00615 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.111 on 53 degrees of freedom
+##   (3 observations deleted due to missingness)
+## Multiple R-squared:  0.1757, Adjusted R-squared:  0.129 
+## F-statistic: 3.765 on 3 and 53 DF,  p-value: 0.01594</code></pre>
+</div>
+<div id="proportion-of-total-c-in-pom-is-higher-under-trees-with-high-foliar-cn-and-decreases-with-higher-soil-clay-percentage-more-is-becoming-maom-in-those-sites" class="section level3">
+<h3>Proportion of total C in POM is higher under trees with high foliar C:N and decreases with higher soil clay percentage (more is becoming MAOM in those sites?)</h3>
+<pre><code>## 
+## Call:
+## lm(formula = propC.as.FLF ~ avg_CN + Myc.x + clay, data = myc.maom, 
+##     na.action = na.omit)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.117350 -0.041110 -0.009359  0.032061  0.198046 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)  0.1149221  0.0378418   3.037   0.0037 **
+## avg_CN       0.0018888  0.0007677   2.460   0.0172 * 
+## Myc.xECM     0.0082905  0.0179879   0.461   0.6468   
+## clay        -0.0129786  0.0053871  -2.409   0.0195 * 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.06686 on 53 degrees of freedom
+##   (3 observations deleted due to missingness)
+## Multiple R-squared:  0.1695, Adjusted R-squared:  0.1225 
+## F-statistic: 3.607 on 3 and 53 DF,  p-value: 0.01911</code></pre>
+</div>
+</div>
+<div id="figure-2" class="section level2">
+<h2>Figure 2:</h2>
+<p><img src="myc_maom_sitepage_files/figure-html/figure_propC-1.png" width="960" /></p>
+<hr />
+<div id="concentration-of-maom-c-lower-under-high-cn-litter-but-only-in-am-plots-and-decreases-with-clay-because-theres-lower-c-in-the-higher-clay-sites-overall." class="section level3">
+<h3>Concentration of MAOM C lower under high C:N litter, but only in AM plots, and decreases with clay because there’s lower [C] in the higher clay sites overall.</h3>
+<pre><code>## 
+## Call:
+## lm(formula = HF.mgC.per.g.soil ~ avg_CN * Myc.x + clay, data = myc.maom, 
+##     na.action = na.omit)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -22.005  -8.296  -0.389   7.703  37.866 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      81.2657     8.7699   9.266 7.95e-13 ***
+## avg_CN           -0.9226     0.2065  -4.468 3.98e-05 ***
+## Myc.xECM        -28.6401     8.9681  -3.194 0.002326 ** 
+## clay             -3.6857     0.9419  -3.913 0.000253 ***
+## avg_CN:Myc.xECM   0.9900     0.2700   3.667 0.000555 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 11.8 on 55 degrees of freedom
+## Multiple R-squared:  0.3925, Adjusted R-squared:  0.3484 
+## F-statistic: 8.885 on 4 and 55 DF,  p-value: 1.314e-05</code></pre>
+<hr />
+</div>
+<div id="lower-pom-c-where-theres-more-clay-because-lower-c-overall-in-those-sites." class="section level3">
+<h3>Lower POM [C] where there’s more clay because lower [C] overall in those sites.</h3>
+<pre><code>## 
+## Call:
+## lm(formula = FLF.mgC.per.g.soil ~ avg_CN + Myc.x + clay, data = myc.maom, 
+##     na.action = na.omit)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.3497 -2.1036 -0.6755  1.0721  8.8346 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  8.28782    1.79142   4.626 2.37e-05 ***
+## avg_CN       0.03642    0.03620   1.006 0.318814    
+## Myc.xECM     1.05546    0.84179   1.254 0.215305    
+## clay        -0.97453    0.25326  -3.848 0.000317 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.167 on 54 degrees of freedom
+##   (2 observations deleted due to missingness)
+## Multiple R-squared:  0.2271, Adjusted R-squared:  0.1841 
+## F-statistic: 5.288 on 3 and 54 DF,  p-value: 0.002859</code></pre>
+</div>
+</div>
+<div id="concentrations-of-maom-and-pom-c" class="section level2">
+<h2>Concentrations of MAOM and POM C:</h2>
+<p><img src="myc_maom_sitepage_files/figure-html/figConcC-1.png" width="960" /></p>
+<hr />
+<div id="to-explain-the-decline-in-both-pom-and-maom-c-and-n-concentrations-with-increasing-clay-we-can-show-there-is-just-a-higher-concentration-of-c-bulk-mineral-soil-where-theres-less-clay.-this-may-be-due-to-chance-few-sites-or-could-be-that-higher-elevation-sites-are-colder-more-c-and-have-less-clay-because-they-are-on-slopes.-we-also-see-a-significant-decline-in-bulk-mineral-soil-c-with-increasing-foliar-cn." class="section level4">
+<h4>To explain the decline in both POM and MAOM C and N concentrations with increasing % clay, we can show there is just a higher concentration of C (bulk mineral soil) where theres less clay. This may be due to chance (few sites) or could be that higher elevation sites are colder (more C) and have less clay because they are on slopes. We also see a significant decline in bulk mineral soil % C with increasing Foliar C:N.</h4>
+<pre><code>## 
+## Call:
+## lm(formula = value.as.fraction ~ clay, data = myc.maom.minC)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.6263 -1.5789 -0.3228  1.0127  7.1991 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   9.0226     1.0544   8.557 7.19e-12 ***
+## clay         -0.6854     0.1836  -3.734 0.000432 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.337 on 58 degrees of freedom
+## Multiple R-squared:  0.1938, Adjusted R-squared:  0.1799 
+## F-statistic: 13.94 on 1 and 58 DF,  p-value: 0.0004324</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = value.as.fraction ~ avg_CN, data = myc.maom.minC)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.2075 -1.8338 -0.5206  1.4228  7.3825 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  7.34740    0.90656   8.105 4.09e-11 ***
+## avg_CN      -0.06757    0.02734  -2.472   0.0164 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.476 on 58 degrees of freedom
+## Multiple R-squared:  0.09529,    Adjusted R-squared:  0.0797 
+## F-statistic: 6.109 on 1 and 58 DF,  p-value: 0.0164</code></pre>
+<p><img src="myc_maom_sitepage_files/figure-html/figs1-1.png" width="960" /></p>
+<hr />
+</div>
+<div id="maom-cn-is-lower-in-am-dominated-stands-lower-where-theres-more-clay-and-higher-where-the-litter-is-nasty." class="section level3">
+<h3>MAOM C:N is lower in AM-dominated stands, lower where there’s more clay, and higher where the litter is nasty.</h3>
+<pre><code>## 
+## Call:
+## lm(formula = HF.cn ~ Myc.x + avg_CN + clay, data = myc.maom.cn, 
+##     na.action = na.omit)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.8631 -2.8877 -0.2368  2.4764 10.0033 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 25.01767    2.06171  12.134  &lt; 2e-16 ***
+## Myc.xECM     3.44233    0.96444   3.569 0.000743 ***
+## avg_CN       0.15699    0.04134   3.798 0.000361 ***
+## clay        -2.01541    0.29162  -6.911 4.85e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.679 on 56 degrees of freedom
+## Multiple R-squared:  0.5314, Adjusted R-squared:  0.5063 
+## F-statistic: 21.17 on 3 and 56 DF,  p-value: 2.708e-09</code></pre>
+<hr />
+</div>
+<div id="pom-cn-tracks-foliar-cn-this-is-likely-because-it-still-is-basically-litter" class="section level3">
+<h3>POM C:N tracks foliar C:N (this is likely because it still <em>is</em> basically litter)</h3>
+<pre><code>## 
+## Call:
+## lm(formula = FLF.cn ~ Myc.x + avg_CN + clay, data = myc.maom.cn, 
+##     na.action = na.omit)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -16.3127  -2.5627   0.0034   2.6696  21.0746 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 17.65330    3.41143   5.175 3.44e-06 ***
+## Myc.xECM     0.50906    1.60303   0.318  0.75204    
+## avg_CN       0.23859    0.06893   3.461  0.00106 ** 
+## clay         1.37934    0.48228   2.860  0.00601 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 6.031 on 54 degrees of freedom
+##   (2 observations deleted due to missingness)
+## Multiple R-squared:  0.2903, Adjusted R-squared:  0.2509 
+## F-statistic: 7.362 on 3 and 54 DF,  p-value: 0.0003182</code></pre>
+<p><img src="myc_maom_sitepage_files/figure-html/fig4-1.png" width="960" /></p>
+</div>
+<div id="no-effect-of-mycorrhizal-type-on-pom-cn-is-evidence-that-our-study-design-was-effective" class="section level3">
+<h3>No effect of mycorrhizal type on POM C:N is evidence that our study design was effective!</h3>
+<!-- ##C:N can tell us about nitrogen: -->
+<!-- ###1. MAOM C:N decreases with clay content, showing that where there's more clay, the microbial residues are more effectively stabilized in the soil? -->
+<!-- ###2. MAOM C:N also tracks foliar C:N, showing that microbes can more efficiently decompose low C:N litter -->
+<!-- ###3. N distribution as MAOM vs POM tracks C generally, but changes in C:N indicate that there are subtle differences in controls on N vs C sequestration in soil.  -->
+<!-- ###4. Results indicate that POM starting from the same C:N is processed differently in AM vs ECM stands, resulting in lower C:N for the most stable SOM in AM stands. -->
+<!-- ###5. Takeaway: N seems to be retained better in AM stands? -->
+<hr />
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
