@@ -2,26 +2,26 @@
 title: Higher soil respiration rate beneath arbuscular mycorrhizal trees in a Northern hardwood forest is driven by associated soil properties
 ---
    
-## As part of my dissertation, I tested how mycorrhizal fungi influence soil respiration rate in at Hubbard Brook Experimental Forest. I measured soil respiration at intervals throughout the growing season in a series of 21 forest plots dominated by AM-associated tree species, ECM-associated tree species, or both. 
+## As part of my dissertation, I tested how mycorrhizal fungi influence soil respiration rate at Hubbard Brook Experimental Forest. I measured soil respiration at intervals throughout the growing season in a series of 21 forest plots dominated by AM-associated tree species, ECM-associated tree species, or both. 
 
 ![](IMG_5797.jpg){width="100%"}
 
 
 ### We found that soil conditions were different in plots with different dominant mycorrhizal associations.  
 
-![](soil chars.pdf){width="100%"}  
+![](soil chars.pdf){width="50%"}  
 
 ***  
 
 
 ### These differences in soil conditions led to higher soil respiration rate in AM-dominated forest plots. Plots with both AM and ECM fungi had similar soil respiration rates as ECM plots. There was no difference in the amount of roots in each plot type, so we felt confident that heterotrophic respiration, which is influenced by soil chemistry and organic horizon depth, led to the patterns we observed.  
 
-![](PlotForMTR.pdf){width="100%"}  
+![](PlotForMTR.pdf){width="50%"}  
 
 ***  
 
 
 ### Interestingly, we also noticed that the basal area of AM and ECM trees in each plot corresponded only weakly with the percentage of AM and ECM associated fine roots in the soil. This suggests that belowground mycorrhizal dominance may not always be easily assumed based on tree basal area.  
 
-![](sa.pdf){width="100%"}
+![](sa.pdf){width="50%"}
 
