@@ -29,7 +29,7 @@ library(plotly)
 
 #bringing in foliar chemistry data from Northern Ecosystems Research Cooperative: http://www.nercscience.org/Metadata_FoliarChemistry.html
 nerc=read.csv("~/Documents/Projects/inProgress/Myc_MAOM/data/foliar_chem/FoliarChem_NERC.csv", header=TRUE) %>% 
-  select(SpeciesID, StateOrProvince, Foliage_cellulose_., Foliage_lignin_., Foliage_C_., Foliage_N_.)  %>%
+  dplyr::select(SpeciesID, StateOrProvince, Foliage_cellulose_., Foliage_lignin_., Foliage_C_., Foliage_N_.)  %>%
   group_by(SpeciesID) %>% 
   mutate(C.N= Foliage_C_. / Foliage_N_.,
          lignin.N=Foliage_lignin_. / Foliage_N_.,
@@ -126,7 +126,7 @@ myc.maom=read.csv("~/Documents/Projects/inProgress/Myc_MAOM/data/myc.maom.data.c
                         Site=="RM" ~ "RM",
                         Site=="LP" ~ "LP")) %>% 
   left_join(nerc, by= "species") %>% 
-  select(-SpeciesID, -Myc.y, -Species) %>% 
+  dplyr::select(-SpeciesID, -Myc.y, -Species) %>% 
     left_join(sites, by="site")
 
 
@@ -136,7 +136,7 @@ myc.maom$species= factor(myc.maom$species, levels=c("F. americana", "A. saccharu
 
 # #Long version of this data frame...
 myc.maom.long=read.csv("~/Documents/Projects/inProgress/Myc_MAOM/data/myc.maom.data.csv") %>%
-  select(-X.1,-X) %>%
+  dplyr::select(-X.1,-X) %>%
   mutate(gC.as.FLF=((FLF.pct.C/100)*FLF.g),
          gC.as.OLF=((OLF.pct.C/100)*OLF.g),
          gC.as.HF=((HF.pct.C/100)*HF.g),
@@ -185,7 +185,7 @@ myc.maom.long=read.csv("~/Documents/Projects/inProgress/Myc_MAOM/data/myc.maom.d
                         Site=="RM" ~ "RM",
                         Site=="LP" ~ "LP")) %>%
   left_join(nerc, by= "species") %>%
-  select(-SpeciesID, -Myc.y, -Species) %>%
+  dplyr::select(-SpeciesID, -Myc.y, -Species) %>%
     left_join(sites, by="site")
 
 
@@ -396,7 +396,7 @@ ggsave("propC.jpg", path="~/Documents/Projects/inProgress/Myc_MAOM/figures", sca
 ```{r CN_MAOM,  echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, include=FALSE}
 #Need to massage this df a bit...
 myc.maom.cn=myc.maom %>% 
-  select(uid, Myc.x, clay, avg_CN, FLF.pct.C, FLF.pct.N, HF.pct.C, HF.pct.N) %>% 
+  dplyr::select(uid, Myc.x, clay, avg_CN, FLF.pct.C, FLF.pct.N, HF.pct.C, HF.pct.N) %>% 
   mutate(FLF.cn= FLF.pct.C/FLF.pct.N,
          HF.cn=HF.pct.C/HF.pct.N) 
 
