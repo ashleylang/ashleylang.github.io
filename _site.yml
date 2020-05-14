@@ -8,7 +8,7 @@ navbar:
     - text: "Mycorrhizae and MAOM"
       href: myc_maom_sitepage.html
     - text: "Soil respiration"     
-      href: research.html 
+      href: soil_respiration_sitepage.html 
     - text: "Hubbard Brook Trees"     
       href: HBR_tree_map_sitepage.html 
 output:
