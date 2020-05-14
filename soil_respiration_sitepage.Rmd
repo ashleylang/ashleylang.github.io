@@ -2,6 +2,8 @@
 title: Higher soil respiration rate beneath arbuscular mycorrhizal trees in a Northern hardwood forest is driven by associated soil properties
 ---
    
+   ***  
+   
 ## As part of my dissertation, I tested how mycorrhizal fungi influence soil respiration rate at Hubbard Brook Experimental Forest. I measured soil respiration at intervals throughout the growing season in a series of 21 forest plots dominated by AM-associated tree species, ECM-associated tree species, or both. 
 
 ![](IMG_5797.jpg){width="100%"}
