@@ -9,6 +9,8 @@ navbar:
       href: myc_maom_sitepage.html
     - text: "Soil respiration"     
       href: research.html 
+    - text: "Hubbard Brook Trees"     
+      href: HBR_tree_map_sitepage.html 
 output:
   html_document:
     theme: flatly
