@@ -11,7 +11,9 @@ title: Higher soil respiration rate beneath arbuscular mycorrhizal trees in a No
 
 ### We found that soil conditions were different in plots with different dominant mycorrhizal associations.  
 
-![](soil chars.pdf){width="50%"}  
+```{r soilchars, echo = FALSE, message=FALSE, fig.align='center', fig.cap='Soil Characteristics', out.width='0.75\\linewidth', fig.pos='H'}
+knitr::include_graphics("soil chars.pdf")
+```
 
 ***  
 
