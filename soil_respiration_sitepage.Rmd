@@ -12,7 +12,7 @@ title: Higher soil respiration rate beneath arbuscular mycorrhizal trees in a No
 ***  
 
 
-### We found that soil conditions were different in plots with different dominant mycorrhizal associations.  
+### We found that soil conditions were different in plots with different dominant mycorrhizal associations. Specifically, AM plots had higher N concentrations, deeper organic horizons, and marginally more fine roots than ECM and Mixed plots. 
 
 ```{r soilchars, echo = FALSE, message=FALSE, fig.align='center', out.width='75%', fig.pos='H'}
 knitr::include_graphics("~/Documents/Website/ashleylang.github.io/images/soilchars.jpg")
@@ -21,7 +21,7 @@ knitr::include_graphics("~/Documents/Website/ashleylang.github.io/images/soilcha
 ***  
 
 
-### These differences in soil conditions led to higher soil respiration rate in AM-dominated forest plots. Plots with both AM and ECM fungi had similar soil respiration rates as ECM plots. There was no difference in the amount of roots in each plot type, so we felt confident that heterotrophic respiration, which is influenced by soil chemistry and organic horizon depth, led to the patterns we observed.  
+### These differences in soil conditions led to higher soil respiration rate in AM-dominated forest plots. Plots with both AM and ECM fungi had similar soil respiration rates as ECM plots.  
 
 ```{r resp_rate, echo = FALSE, message=FALSE, fig.align='center', out.width='75%', fig.pos='H'}
 knitr::include_graphics("~/Documents/Website/ashleylang.github.io/images/resp_rate.jpg")
