@@ -41,6 +41,4 @@ knitr::include_graphics("~/Documents/Website/ashleylang.github.io/images/sa.jpg"
 
 This work is published in the journal *Ecosystems*. You can access a PDF of the manuscript below.
 
-```{r out.width="100%", out.height="500", echo=FALSE}
-knitr::include_graphics('~/Documents/Website/ashleylang.github.io/Lang2019.pdf')
-```
+![](https://link.springer.com/content/pdf/10.1007/s10021-019-00466-7.pdf)
