@@ -7,8 +7,6 @@ navbar:
       href: index.html
     - text: "Research"
       href: research.html
-    - text: "Hubbard Brook Trees"     
-      href: HBR_tree_map_sitepage.html 
 output:
   html_document:
     theme: paper
