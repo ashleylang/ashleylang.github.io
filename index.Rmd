@@ -1,9 +1,10 @@
 ---
 title: "Ashley Lang"
-author: "Ecosystem ecology and soil biogeochemistry"
 
 output: html_document
 ---
+
+
 
 ![](mushroom.jpg){width="100%"}
 

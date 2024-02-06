@@ -1,5 +1,7 @@
 ---
-title: "Mycorrhizal fungi affect the proportions and chemistry of different soil organic matter fractions"
+title: Mycorrhizal fungi affect the proportions and chemistry of different soil organic
+  matter fractions
+
 ---
 
 <style type="text/css">

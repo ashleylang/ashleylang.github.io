@@ -66,6 +66,9 @@ plots=trees %>%
 
 #Next steps: add the soil characteristics
 
+states <- map_data("state")
+nh <- subset(states, region %in% c("new hampshire"))
+
 ```
 
 
@@ -129,8 +132,7 @@ calcium
 
 
 ```{r NHmap, fig.width=12}
-states <- map_data("state")
-nh <- subset(states, region %in% c("new hampshire"))
+
 
 regionalmap=ggplot(data=nh)+
   geom_polygon(aes(x=long, y=lat, group=group), fill="darkseagreen3", color="black")+
