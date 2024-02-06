@@ -1,6 +1,5 @@
 ---
-title: Research
-
+title: "Research"
 ---
 
 ## Projects:
