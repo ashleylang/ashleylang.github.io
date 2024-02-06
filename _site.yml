@@ -5,8 +5,8 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Mycorrhizae and MAOM"
-      href: myc_maom_sitepage.html
+    - text: "Research"
+      href: research.html
     - text: "Soil respiration"     
       href: soil_respiration_sitepage.html 
     - text: "Hubbard Brook Trees"     
