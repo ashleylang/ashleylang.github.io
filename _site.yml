@@ -4,9 +4,12 @@ navbar:
   title: "Ashley Lang"
   left:
     - text: "Home"
-      href: index.html
+      href: home.html
     - text: "Research"
       href: research.html
+    - text: "Teaching"
+      href: teaching.html
+      
 output:
   html_document:
     theme: cosmo

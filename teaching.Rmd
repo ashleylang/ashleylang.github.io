@@ -1,0 +1,11 @@
+---
+title: "Teaching"
+
+output: html_document
+---
+
+
+
+#### 
+
+![](images/sugaring.jpg){width="50%"}![](images/hbr_field_trip.jpg){width="50%"}
