@@ -7,6 +7,10 @@ output: html_document
 ## Postdoctoral Researcher, US Forest Service 
 ### Forest Inventory and Analysis Program
 
-![](images/mushroom.jpg){width="100%"}
+<center>
+
+![](images/mushroom.jpg){width="50%"}
+
+</center>
 
 
