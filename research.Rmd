@@ -12,4 +12,8 @@ title: "Research"
 
 #### I am collaborating with Dr. Rich Phillips (Indiana University) and Dr. Jennifer Pett-Ridge (Lawrence Livermore National Lab) to answer key questions about the stability of carbon on soil minerals in ecosystems across the U.S. Using soil collected at sites within the NEON network, we aim to characterize the conditions that favor MAOM formation and understand the potential drivers of its long-term persistence. 
 
-![](images/neon.png){width="100%"}
+<center>
+
+![](images/neon.png){width="50%"}
+
+</center>

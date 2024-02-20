@@ -9,7 +9,7 @@ output: html_document
 
 <center>
 
-![](images/mushroom.jpg){width="50%"}
+![](images/mushroom.jpg){width="80%"}
 
 </center>
 
