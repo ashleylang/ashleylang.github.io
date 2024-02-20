@@ -1,0 +1,11 @@
+---
+title: "Publications"
+
+output: html_document
+---
+
+<center>
+
+![https://scholar.google.com/citations?user=Ntr_M9QAAAAJ&hl=en](images/scholar.jpg){width="80%"}
+
+</center>
