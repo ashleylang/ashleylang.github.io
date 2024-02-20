@@ -6,6 +6,7 @@ output: html_document
 
 <center>
 
-![https://scholar.google.com/citations?user=Ntr_M9QAAAAJ&hl=en](images/scholar.jpg){width="80%"}
+[![](images/scholar.png)](https://scholar.google.com/citations?user=Ntr_M9QAAAAJ&hl=en){width="30%"}
+
 
 </center>
