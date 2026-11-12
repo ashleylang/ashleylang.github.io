@@ -1,336 +1,225 @@
-<!DOCTYPE html>
-
-<html>
-
+<!doctype html>
+<html lang="en">
 <head>
-
-<meta charset="utf-8" />
-<meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
-
-
-
-
-<title>home.knit</title>
-
-<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
-<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
-
-<style type="text/css">code{white-space: pre;}</style>
-<script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
-}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ashley Lang · Ecosystem Ecologist</title>
+<meta name="description" content="Ashley Lang is an ecosystem ecologist studying how plants, soil, and microbes shape the carbon cycle. Carbon Science Lead at SPUN; Visiting Scholar at Dartmouth College.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>
+  // Apply saved theme before paint to avoid a flash
+  try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 </script>
-
-
-
-
-
-
-<link rel="stylesheet" href="style.css" type="text/css" />
-
-
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-img {
-  max-width:100%;
-}
-.tabbed-pane {
-  padding-top: 12px;
-}
-.html-widget {
-  margin-bottom: 20px;
-}
-button.code-folding-btn:focus {
-  outline: none;
-}
-summary {
-  display: list-item;
-}
-details > summary > p:only-child {
-  display: inline;
-}
-pre code {
-  padding: 0;
-}
-</style>
-
-
-<style type="text/css">
-.dropdown-submenu {
-  position: relative;
-}
-.dropdown-submenu>.dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -6px;
-  margin-left: -1px;
-  border-radius: 0 6px 6px 6px;
-}
-.dropdown-submenu:hover>.dropdown-menu {
-  display: block;
-}
-.dropdown-submenu>a:after {
-  display: block;
-  content: " ";
-  float: right;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 5px 0 5px 5px;
-  border-left-color: #cccccc;
-  margin-top: 5px;
-  margin-right: -10px;
-}
-.dropdown-submenu:hover>a:after {
-  border-left-color: #adb5bd;
-}
-.dropdown-submenu.pull-left {
-  float: none;
-}
-.dropdown-submenu.pull-left>.dropdown-menu {
-  left: -100%;
-  margin-left: 10px;
-  border-radius: 6px 0 6px 6px;
-}
-</style>
-
-<script type="text/javascript">
-// manage active state of menu based on current page
-$(document).ready(function () {
-  // active menu anchor
-  href = window.location.pathname
-  href = href.substr(href.lastIndexOf('/') + 1)
-  if (href === "")
-    href = "home.html";
-  var menuAnchor = $('a[href="' + href + '"]');
-
-  // mark the anchor link active (and if it's in a dropdown, also mark that active)
-  var dropdown = menuAnchor.closest('li.dropdown');
-  if (window.bootstrap) { // Bootstrap 4+
-    menuAnchor.addClass('active');
-    dropdown.find('> .dropdown-toggle').addClass('active');
-  } else { // Bootstrap 3
-    menuAnchor.parent().addClass('active');
-    dropdown.addClass('active');
-  }
-
-  // Navbar adjustments
-  var navHeight = $(".navbar").first().height() + 15;
-  var style = document.createElement('style');
-  var pt = "padding-top: " + navHeight + "px; ";
-  var mt = "margin-top: -" + navHeight + "px; ";
-  var css = "";
-  // offset scroll position for anchor links (for fixed navbar)
-  for (var i = 1; i <= 6; i++) {
-    css += ".section h" + i + "{ " + pt + mt + "}\n";
-  }
-  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
-  document.head.appendChild(style);
-});
-</script>
-
-<!-- tabsets -->
-
-<style type="text/css">
-.tabset-dropdown > .nav-tabs {
-  display: inline-table;
-  max-height: 500px;
-  min-height: 44px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs > li.active {
-  display: block;
-}
-
-.tabset-dropdown > .nav-tabs > li > a,
-.tabset-dropdown > .nav-tabs > li > a:focus,
-.tabset-dropdown > .nav-tabs > li > a:hover {
-  border: none;
-  display: inline-block;
-  border-radius: 4px;
-  background-color: transparent;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
-  display: block;
-  float: none;
-}
-
-.tabset-dropdown > .nav-tabs > li {
-  display: none;
-}
-</style>
-
-<!-- code folding -->
-
-
-
-
 </head>
-
 <body>
 
+<header class="nav" id="top">
+  <a class="brand" href="#top">Ashley Lang</a>
+  <nav aria-label="Main">
+    <a href="#about">About</a>
+    <a href="#research">Research</a>
+    <a href="#art">Art + Science</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <button id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"/></svg>
+  </button>
+</header>
 
-<div class="container-fluid main-container">
+<main>
 
-
-
-
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="home.html">Ashley Lang</a>
+  <!-- HERO -->
+  <section class="hero">
+    <canvas id="network" aria-hidden="true"></canvas>
+    <div class="hero-inner">
+      <div class="hero-panel">
+      <p class="eyebrow">Ecosystem ecology · Carbon cycling · Mycorrhizal fungi</p>
+      <h1>What happens to carbon<br><em>below ground?</em></h1>
+      <p class="lede">I study how plants, soil, and microbes work together to store carbon, so we can predict how ecosystems will respond to a changing climate and shifting land use.</p>
+      <ul class="roles">
+        <li><strong>Carbon Science Lead</strong> · Society for the Protection of Underground Networks (SPUN)</li>
+        <li><strong>Visiting Scholar</strong> · Dartmouth College</li>
+      </ul>
+      <p class="cta">
+        <a class="btn primary" href="#research">Explore research</a>
+        <a class="btn" href="#contact">Get in touch</a>
+      </p>
+      </div>
     </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li>
-  <a href="home.html">Home</a>
-</li>
-<li>
-  <a href="research.html">Research</a>
-</li>
-<li>
-  <a href="teaching.html">Teaching</a>
-</li>
-<li>
-  <a href="publications.html">Publications</a>
-</li>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section about">
+    <div class="wrap grid-2">
+      <figure class="photo portrait">
+        <img src="images/portrait.jpg" alt="Portrait of Ashley Lang" loading="lazy">
+        <figcaption>Replace with your portrait</figcaption>
+      </figure>
+      <div>
+        <h2>About</h2>
+        <p>I am an ecosystem ecologist studying plant-soil-microbial interactions. Using a variety of approaches, I explore links between fungal communities and ecosystem carbon storage to predict how Earth's carbon cycle will respond to change.</p>
+        <p>When I'm not at my desk, you can find me growing flowers, making art, sewing quilts, and wrangling my three young daughters.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section id="research" class="section alt">
+    <div class="wrap">
+      <h2>Research</h2>
+
+      <div class="cards">
+
+        <article class="card">
+          <figure class="photo"><img src="images/biodiversitree.jpg" alt="Aerial view of the BiodiversiTREE planting" loading="lazy"><figcaption>BiodiversiTREE</figcaption></figure>
+          <div class="card-body">
+            <p class="tag">New Phytologist · 2026</p>
+            <h3>Leaf litter and fine roots have distinct effects on particulate and mineral-associated soil organic matter in a tree common garden</h3>
+            <p class="links">
+              <a href="pdfs/new-phytologist-2026-litter-roots-common-garden.pdf">PDF</a>
+              <a href="https://serc.si.edu/research/projects/biodiversitree">BiodiversiTREE</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="card">
+          <figure class="photo"><img src="images/fia.jpg" alt="Soil cores from a NEON site" loading="lazy"><figcaption>Forest Inventory &amp; Analysis</figcaption></figure>
+          <div class="card-body">
+            <p class="tag">Biogeochemistry Letters · 2025</p>
+            <h3>Bulk density calculation methods systematically alter estimates of soil organic carbon stocks in United States forests</h3>
+            <p class="links">
+              <a href="pdfs/biogeochemistry-2025-bulk-density.pdf">PDF</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="card">
+          <figure class="photo"><img src="images/dissertation.jpg" alt="Orange mushrooms on the forest floor" loading="lazy"><figcaption>Hubbard Brook</figcaption></figure>
+          <div class="card-body">
+            <p class="tag">Ecosystems · 2025</p>
+            <h3>Mineral-Associated Organic Matter Concentration Beneath Northern Temperate Trees Varies by Mycorrhizal Type and Leaf Habit</h3>
+            <p class="links">
+              <a href="pdfs/ecosystems-2025-maom-mycorrhizal-type.pdf">PDF</a>
+              <a href="https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-hbr.314.1">Data</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="card">
+          <figure class="photo"><img src="images/lidar.jpg" alt="Illustration of trees and their root systems" loading="lazy"><figcaption>Canopy × soil fungi</figcaption></figure>
+          <div class="card-body">
+            <p class="tag">Ecosphere · 2023</p>
+            <h3>Forest structural diversity is linked to soil microbial diversity</h3>
+            <p class="links">
+              <a href="pdfs/ecosphere-2023-structural-diversity.pdf">PDF</a>
+              <a href="https://research.fs.usda.gov/treesearch/68659">Rooted in Research</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="card">
+          <figure class="photo"><img src="images/neon.jpg" alt="Illustration of fungal hyphae wrapping soil minerals" loading="lazy"><figcaption>NEON soils</figcaption></figure>
+          <div class="card-body">
+            <p class="tag">Journal of Ecology · 2023</p>
+            <h3>Climate, soil mineralogy and mycorrhizal fungi influence soil organic matter fractions in eastern US temperate forests</h3>
+            <p class="links">
+              <a href="pdfs/journal-of-ecology-2023-soil-organic-matter-fractions.pdf">PDF</a>
+              <a href="https://www.neonscience.org/impact/observatory-blog/digging-deeper-carbon-and-fungi-eastern-forests">NEON blog</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="card">
+          <figure class="photo"><img src="images/biomass.jpg" alt="Giant sequoia trunks" loading="lazy"><figcaption>AM vs. ECM trees</figcaption></figure>
+          <div class="card-body">
+            <p class="tag">Ecology · 2022</p>
+            <h3>Tree biomass allocation differs by mycorrhizal association</h3>
+            <p class="links">
+              <a href="pdfs/ecology-2022-tree-biomass-allocation.pdf">PDF</a>
+              <a href="https://github.com/ashleylang/BAM">Code &amp; data</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="card">
+          <figure class="photo"><img src="images/nph2021.jpg" alt="Litterbag mesh with fine roots growing into it" loading="lazy"><figcaption>Litterbags</figcaption></figure>
+          <div class="card-body">
+            <p class="tag">New Phytologist · 2021</p>
+            <h3>Fine roots and mycorrhizal fungi accelerate leaf litter decomposition in a northern hardwood forest regardless of dominant tree mycorrhizal associations</h3>
+            <p class="links">
+              <a href="pdfs/new-phytologist-2021-litter-decomposition.pdf">PDF</a>
+              <a href="https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-hbr.249.1">Data</a>
+            </p>
+          </div>
+        </article>
+
+        <article class="card">
+          <figure class="photo"><img src="images/ecosystems2019.jpg" alt="Soil respiration measurement equipment on the forest floor" loading="lazy"><figcaption>Soil respiration</figcaption></figure>
+          <div class="card-body">
+            <p class="tag">Ecosystems · 2019</p>
+            <h3>Higher Soil Respiration Rate Beneath Arbuscular Mycorrhizal Trees in a Northern Hardwood Forest is Driven by Associated Soil Properties</h3>
+            <p class="links">
+              <a href="pdfs/ecosystems-2019-soil-respiration.pdf">PDF</a>
+              <a href="https://portal.edirepository.org/nis/mapbrowse?scope=knb-lter-hbr&identifier=236">Data</a>
+            </p>
+          </div>
+        </article>
+
+
+      </div>
+
+      <p class="more">The full publication list is available on <a href="https://scholar.google.com/citations?hl=en&user=Ntr_M9QAAAAJ">Google Scholar</a> and <a href="https://orcid.org/0000-0002-6080-1681">ORCID</a>.</p>
+    </div>
+  </section>
+
+  <!-- ART + SCIENCE -->
+  <section id="art" class="section alt">
+    <div class="wrap">
+      <h2>Art + Science</h2>
+      <p class="section-lede">I carve nature-themed stamps for art prints and fabric, and sew science-themed quilts.</p>
+
+      <div class="gallery" id="gallery">
+        <figure class="photo"><img src="images/art-1.jpg" alt="Fabric block-printed with carved leaf and cone stamps" loading="lazy"><figcaption>Art 1</figcaption></figure>
+        <figure class="photo"><img src="images/art-2.jpg" alt="Quilt in earth tones with a red square" loading="lazy"><figcaption>Art 2</figcaption></figure>
+        <figure class="photo"><img src="images/art-3.jpg" alt="Small quilt in brown, white and ochre bands" loading="lazy"><figcaption>Art 3</figcaption></figure>
+        <figure class="photo"><img src="images/art-4.jpg" alt="Framed linocut of trees and their roots" loading="lazy"><figcaption>Art 4</figcaption></figure>
+        <figure class="photo"><img src="images/art-5.jpg" alt="Hand-carved leaf and mushroom stamps" loading="lazy"><figcaption>Art 5</figcaption></figure>
+        <figure class="photo"><img src="images/art-6.jpg" alt="Cotton fabric block-printed with mushroom gill stamps" loading="lazy"><figcaption>Art 6</figcaption></figure>
+      </div>
+
+      <aside class="feature">
+        <div>
+          <h3>Data Quilt Mockups</h3>
+          <p>I worked with students from Virginia Tech to develop an app to help design quilts that represent ecological data. This app translates long-term data from Hubbard Brook Experimental Forest into color-coded squares so you can make a quilt showing the last 50 years of rainfall volume, stream pH, or whatever else your heart desires.</p>
+        </div>
+        <a class="btn primary" href="https://vt-eds.shinyapps.io/EDS25-Data_Quilt/">Try the app</a>
+      </aside>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section contact">
+    <div class="wrap narrow center">
+      <h2>Say hello</h2>
+      <p class="section-lede">Collaborations, questions about fungi and soil carbon, or a fellow science-loving quilter? I'd love to hear from you.</p>
+      <p><a class="btn primary" href="mailto:ashley@spun.earth">ashley@spun.earth</a></p>
+      <ul class="social">
+        <li><a href="https://scholar.google.com/citations?hl=en&user=Ntr_M9QAAAAJ">Google Scholar</a></li>
+        <li><a href="https://orcid.org/0000-0002-6080-1681">ORCID</a></li>
+        <li><a href="https://github.com/ashleylang">GitHub</a></li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-        
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div><!--/.container -->
-</div><!--/.navbar -->
+    </div>
+  </section>
 
-<div id="header">
+</main>
 
+<footer>
+  <p>© <span id="year">2026</span> Ashley Lang</p>
+</footer>
 
-
-
-</div>
-
-
-<div id="postdoctoral-researcher-us-forest-service"
-class="section level2">
-<h2>Postdoctoral Researcher, US Forest Service</h2>
-<div id="forest-inventory-and-analysis-program" class="section level3">
-<h3>Forest Inventory and Analysis Program</h3>
-<p><img src="images/mushroom.jpg" style="width:100.0%" /></p>
-</div>
-</div>
-
-
-
-
-</div>
-
-<script>
-
-// add bootstrap table styles to pandoc tables
-function bootstrapStylePandocTables() {
-  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
-}
-$(document).ready(function () {
-  bootstrapStylePandocTables();
-});
-
-
-</script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open');
-  });
-});
-</script>
-
-<!-- code folding -->
-
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
