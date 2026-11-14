@@ -144,3 +144,6 @@ footer { text-align: center; padding: 2rem 16px 3rem; color: var(--muted); font-
 .hero-panel { max-width: 920px; }
 .hero-panel .lede { max-width: 46em; text-wrap: balance; }
 @media (min-width: 900px) { .hero-panel { margin-left: 90px; } }
+
+/* Phones: the hero text takes most of the width, so the roots fade into the background behind it */
+@media (max-width: 700px) { #network { opacity: .42; } }

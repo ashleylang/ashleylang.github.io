@@ -40,7 +40,7 @@ document.querySelectorAll('.photo img').forEach(function (img) {
   var ctx = canvas.getContext('2d');
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
-  var w, h, segs, tips, raf, avoid = [], rng;
+  var w, h, segs, tips, raf, avoid = [], rng, mobile = false;
 
   // Seeded generator: the same roots grow every time the page opens
   function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -50,8 +50,9 @@ document.querySelectorAll('.photo img').forEach(function (img) {
 
   // Where the hero text sits, so roots can grow around it
   function measure() {
-    var cr = canvas.getBoundingClientRect(), pad = w < 700 ? 6 : 24;
+    var cr = canvas.getBoundingClientRect(), pad = 24;
     avoid = [];
+    if (mobile) return;   // on phones the roots run faintly behind the text instead of around it
     var els = [];
     document.querySelectorAll('.hero-panel > *').forEach(function (el) {
       if (el.tagName === 'UL') el.querySelectorAll('li').forEach(function (li) { els.push(li); }); else els.push(el);
@@ -77,6 +78,22 @@ document.querySelectorAll('.photo img').forEach(function (img) {
     rng = mulberry(20241111);
     segs = []; tips = [];
     gw = Math.ceil(w / CELL) + 1; gh = Math.ceil(h / CELL) + 1; grid = new Uint8Array(gw * gh);
+    var P = Math.PI;
+    if (mobile) {
+      // Phones: roots spread over the whole hero, behind the text (the canvas is faded in CSS)
+      var M = [
+        { x: w * .10, y: -4, a: P / 2 + .12, w: 3.4, v: 1.2, life: 420, bp: 1.5 },
+        { x: w * .36, y: -4, a: P / 2 - .05, w: 3.0, v: 1.15, life: 360, bp: 1.5 },
+        { x: w * .62, y: -4, a: P / 2 + .08, w: 3.6, v: 1.25, life: 440, bp: 1.5 },
+        { x: w * .90, y: -4, a: P / 2 + .1, w: 3.2, v: 1.2, life: 400, bp: 1.5 },
+        { x: -4, y: h * .22, a: .45, w: 3.0, v: 1.2, life: 360, bp: 1.5 },
+        { x: w + 4, y: h * .38, a: P * .8, w: 3.2, v: 1.2, life: 360, bp: 1.5 },
+        { x: -4, y: h * .62, a: .35, w: 3.0, v: 1.2, life: 340, bp: 1.5 },
+        { x: w + 4, y: h * .82, a: P * .85, w: 3.0, v: 1.2, life: 300, bp: 1.4 }
+      ];
+      M.forEach(function (t, k) { t.tgt = P / 2; t.grav = .03; t.gen = 0; t.fine = false; t.r = mulberry(7001 + k * 131); tips.push(t); });
+      return;
+    }
     var minX = Infinity, maxX = 0;
     avoid.forEach(function (a) { minX = Math.min(minX, a.x1); maxX = Math.max(maxX, a.x2); });
     if (!isFinite(minX)) { minX = 40; maxX = w * .7; }
@@ -189,6 +206,7 @@ document.querySelectorAll('.photo img').forEach(function (img) {
     cancelAnimationFrame(raf);
     var r = canvas.getBoundingClientRect();
     w = r.width; h = r.height;
+    mobile = matchMedia('(max-width: 700px)').matches;
     canvas.width = w * dpr; canvas.height = h * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     measure(); seed();
